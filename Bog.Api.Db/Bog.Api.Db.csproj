@@ -5,6 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190618210552_test.cs" />
+    <Compile Remove="Migrations\20190618210552_test.Designer.cs" />
+    <Compile Remove="Migrations\20190618211430_test.cs" />
+    <Compile Remove="Migrations\20190618211430_test.Designer.cs" />
+    <Compile Remove="Migrations\20190618211710_AddBlogArticle.cs" />
+    <Compile Remove="Migrations\20190618211710_AddBlogArticle.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.4">
