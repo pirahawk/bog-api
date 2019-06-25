@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Bog.Api.Web.Controllers
 {
     [Route("api/ping")]
-    public class PingController : Controller
+    public class HealthCheckController : Controller
     {
         [HttpGet()]
         public IActionResult Ping()

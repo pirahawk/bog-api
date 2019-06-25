@@ -10,11 +10,11 @@ namespace Bog.Api.Db.DbContexts
 {
     public class BlogApiDbContext : DbContext
     {
-        public DbSet<Blog> Blogs { get; set; }
-        public DbSet<Article> Articles { get; set; }
-
         private readonly string _connection;
         private readonly ILogger<BlogApiDbContext> _logger;
+
+        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<Article> Articles { get; set; }
 
         public BlogApiDbContext(IOptionsMonitor<EntityConfiguration> optionsAccessor, ILogger<BlogApiDbContext> logger)
         {

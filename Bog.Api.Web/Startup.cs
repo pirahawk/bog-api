@@ -1,5 +1,6 @@
 ﻿using Bog.Api.Db.DbContexts;
 using Bog.Api.Domain.Configuration;
+using Bog.Api.Domain.DbContext;
 using Bog.Api.Web.Configuration.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,6 +24,7 @@ namespace Bog.Api.Web
             services.Configure<EntityConfiguration>(_configuration.GetSection("ConnectionStrings"));
             services.AddDbContext<BlogApiDbContext>();
             services.AddTransient<IStartupFilter, BlogDbContextStartupDataSeeder>();
+            services.AddTransient<IBlogApiDbContext, BlogApiDbContextAdapter>();
             services.AddMvc();
         }
 
