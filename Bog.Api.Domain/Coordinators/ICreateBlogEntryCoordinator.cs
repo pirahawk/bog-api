@@ -6,6 +6,6 @@ namespace Bog.Api.Domain.Coordinators
 {
     public interface ICreateBlogEntryCoordinator
     {
-        Task<Article> CreateNewEntryAsync(NewEntryRequest newEntry);
+        Task<Article> CreateNewEntryAsync(NewEntryRequest request);
     }
 }

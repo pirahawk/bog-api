@@ -15,14 +15,14 @@ namespace Bog.Api.Domain.Coordinators
         {
             _context = context;
         }
-        public async Task<Article> CreateNewEntryAsync(NewEntryRequest newEntry)
+        public async Task<Article> CreateNewEntryAsync(NewEntryRequest request)
         {
-            if (newEntry == null) throw new ArgumentNullException(nameof(newEntry));
+            if (request == null) throw new ArgumentNullException(nameof(request));
 
-            var blog = GetBlogForEntry(newEntry.BlogId);
+            var blog = GetBlogForEntry(request.BlogId);
 
             if (blog == null
-                || string.IsNullOrWhiteSpace(newEntry.Author))
+                || string.IsNullOrWhiteSpace(request.Author))
             {
                 return null;
             }
@@ -30,13 +30,14 @@ namespace Bog.Api.Domain.Coordinators
             var newBlogArticle = new Article()
             {
                 BlogId =  blog.Id,
+                Author = request.Author,
                 Created = DateTimeOffset.UtcNow
             };
 
             await _context.Add(newBlogArticle);
             await _context.SaveChanges();
 
-            return null;
+            return newBlogArticle;
         }
 
         private Blog GetBlogForEntry(Guid newEntryBlogId) => _context.Blogs.FirstOrDefault(b => b.Id == newEntryBlogId);

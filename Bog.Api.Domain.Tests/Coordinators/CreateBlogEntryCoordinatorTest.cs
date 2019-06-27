@@ -51,5 +51,32 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
             Assert.Null(await blogEntryCoordinator.CreateNewEntryAsync(request));
         }
+
+        [Fact]
+        public async Task SavesNewEntryWhenConditionsMeet()
+        {
+            var blog = new BlogFixture().Build();
+            var newEntryRequest = new NewEntryRequest
+            {
+                BlogId = blog.Id,
+                Author = "Test"
+            };
+
+            var dbContextFixture = new MockBlogApiDbContextFixture()
+                .WithBlog(blog);
+
+            var blogEntryCoordinator = new CreateBlogEntryCoordinatorFixture()
+            {
+                Context = dbContextFixture.Build()
+            }.Build();
+
+            var result = await blogEntryCoordinator.CreateNewEntryAsync(newEntryRequest);
+
+            Assert.Equal(newEntryRequest.BlogId, result.BlogId);
+            Assert.Equal(newEntryRequest.Author, result.Author);
+
+            dbContextFixture.Mock.Verify(ctx => ctx.Add(result));
+            dbContextFixture.Mock.Verify(ctx => ctx.SaveChanges());
+        }
     }
 }

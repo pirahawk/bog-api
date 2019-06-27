@@ -22,9 +22,18 @@ namespace Bog.Api.Domain.Tests.DbContext
         public IBlogApiDbContext Build()
         {
             _mock = new Mock<IBlogApiDbContext>();
+            _mock.Setup(ctx => ctx.Add(It.IsAny<object>())).Verifiable();
+            _mock.Setup(ctx => ctx.SaveChanges()).Verifiable();
+
             _mock.Setup(ctx => ctx.Blogs).Returns(Blogs.AsQueryable());
 
             return _mock.Object;
+        }
+
+        public MockBlogApiDbContextFixture WithBlog(Blog blog)
+        {
+            Blogs.Add(blog);
+            return this;
         }
     }
 }
