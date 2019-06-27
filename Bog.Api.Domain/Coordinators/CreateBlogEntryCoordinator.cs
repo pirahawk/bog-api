@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.DbContext;
 using Bog.Api.Domain.Models;
@@ -14,22 +15,26 @@ namespace Bog.Api.Domain.Coordinators
         {
             _context = context;
         }
-        public Article CreateNewEntry(NewEntryRequest newEntry)
+        public async Task<Article> CreateNewEntryAsync(NewEntryRequest newEntry)
         {
             if (newEntry == null) throw new ArgumentNullException(nameof(newEntry));
 
             var blog = GetBlogForEntry(newEntry.BlogId);
 
-            if (blog == null)
+            if (blog == null
+                || string.IsNullOrWhiteSpace(newEntry.Author))
             {
                 return null;
             }
 
             var newBlogArticle = new Article()
             {
-                BlogId =  blog.Id
+                BlogId =  blog.Id,
+                Created = DateTimeOffset.UtcNow
             };
 
+            await _context.Add(newBlogArticle);
+            await _context.SaveChanges();
 
             return null;
         }

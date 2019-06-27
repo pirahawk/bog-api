@@ -10,13 +10,9 @@ namespace Bog.Api.Domain.Tests.DbContext
     {
         private Mock<IBlogApiDbContext> _mock;
 
-        public Mock<IBlogApiDbContext> Mock
-        {
-            get => _mock;
-        }
+        public Mock<IBlogApiDbContext> Mock => _mock;
 
-        public List<Blog> Blogs { get; }
-
+        public List<Blog> Blogs { get; set; }
 
         public MockBlogApiDbContextFixture()
         {

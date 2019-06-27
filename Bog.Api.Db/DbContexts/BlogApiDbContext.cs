@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace Bog.Api.Db.DbContexts
 {
-    public class BlogApiDbContext : DbContext
+    public partial class BlogApiDbContext : DbContext
     {
         private readonly string _connection;
         private readonly ILogger<BlogApiDbContext> _logger;
