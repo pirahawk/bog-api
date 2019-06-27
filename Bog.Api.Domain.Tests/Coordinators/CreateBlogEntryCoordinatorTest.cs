@@ -1,6 +1,7 @@
 ﻿using Bog.Api.Domain.Models;
 using Bog.Api.Domain.Tests.DbContext;
 using System;
+using Bog.Api.Domain.Data;
 using Xunit;
 
 namespace Bog.Api.Domain.Tests.Coordinators
@@ -16,12 +17,17 @@ namespace Bog.Api.Domain.Tests.Coordinators
             };
 
             var mockBlogApiDbContextFixture = new MockBlogApiDbContextFixture();
+            var blogApiDbContext = mockBlogApiDbContextFixture.Build();
+
             var blogEntryCoordinator = new CreateBlogEntryCoordinatorFixture()
             {
-                Context = mockBlogApiDbContextFixture.Build()
+                Context = blogApiDbContext
             }.Build();
 
-            blogEntryCoordinator.CreateNewEntry(request);
+
+            Assert.Empty(blogApiDbContext.Blogs);
+
+            Assert.Null(blogEntryCoordinator.CreateNewEntry(request));
         }
     }
 }
