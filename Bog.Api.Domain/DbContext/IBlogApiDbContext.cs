@@ -9,7 +9,9 @@ namespace Bog.Api.Domain.DbContext
         IQueryable<Blog> Blogs { get; }
         IQueryable<Article> Articles { get; }
 
-        Task Add<TEntity>(params TEntity[] newEntities);
         Task<int> SaveChanges();
+
+        Task Add<TEntity>(params TEntity[] newEntities);
+        Task<TEntity> Find<TEntity>(params object[] keyValues) where TEntity : class;
     }
 }

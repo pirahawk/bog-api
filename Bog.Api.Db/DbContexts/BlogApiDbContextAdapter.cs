@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.DbContext;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Remotion.Linq.Clauses;
 
 namespace Bog.Api.Db.DbContexts
 {
@@ -19,6 +20,11 @@ namespace Bog.Api.Db.DbContexts
             _context = context;
         }
 
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         public async Task Add<TEntity>(params TEntity[] newEntities)
         {
             if (newEntities == null) throw new ArgumentNullException(nameof(newEntities));
@@ -29,9 +35,11 @@ namespace Bog.Api.Db.DbContexts
             }
         }
 
-        public async Task<int> SaveChanges()
+        public async Task<TEntity> Find<TEntity>(params object[] keyValues) where TEntity:class
         {
-            return await _context.SaveChangesAsync();
+            return await _context.FindAsync<TEntity>(keyValues);
         }
+
+
     }
 }

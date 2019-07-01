@@ -15,7 +15,7 @@ namespace Bog.Api.Domain.Coordinators
         {
             _context = context;
         }
-        public async Task<Article> CreateNewEntryAsync(ArticleRequest request)
+        public async Task<Article> CreateNewArticleAsync(ArticleRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 

@@ -49,7 +49,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
                 Context = blogApiDbContext
             }.Build();
 
-            Assert.Null(await blogEntryCoordinator.CreateNewEntryAsync(request));
+            Assert.Null(await blogEntryCoordinator.CreateNewArticleAsync(request));
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
                 Context = dbContextFixture.Build()
             }.Build();
 
-            var result = await blogEntryCoordinator.CreateNewEntryAsync(newEntryRequest);
+            var result = await blogEntryCoordinator.CreateNewArticleAsync(newEntryRequest);
 
             Assert.Equal(newEntryRequest.BlogId, result.BlogId);
             Assert.Equal(newEntryRequest.Author, result.Author);

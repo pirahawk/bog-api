@@ -14,10 +14,12 @@ namespace Bog.Api.Web.Controllers
     public class ArticleController : Controller
     {
         private readonly ICreateBlogEntryCoordinator _createBlogEntryCoordinator;
+        private readonly IFindBlogArticleCoordinator _findBlogArticleCoordinator;
 
-        public ArticleController(ICreateBlogEntryCoordinator createBlogEntryCoordinator)
+        public ArticleController(ICreateBlogEntryCoordinator createBlogEntryCoordinator, IFindBlogArticleCoordinator findBlogArticleCoordinator)
         {
             _createBlogEntryCoordinator = createBlogEntryCoordinator;
+            _findBlogArticleCoordinator = findBlogArticleCoordinator;
         }
 
         [HttpPost]
@@ -28,14 +30,14 @@ namespace Bog.Api.Web.Controllers
                 return BadRequest();
             }
 
-            var result = await _createBlogEntryCoordinator.CreateNewEntryAsync(article);
+            var result = await _createBlogEntryCoordinator.CreateNewArticleAsync(article);
 
             if (result == null)
             {
                 return BadRequest();
             }
 
-            var response = MapNewArticleResponse(result);
+            var response = MapArticleResponse(result);
             return Ok(response);
         }
 
@@ -43,22 +45,30 @@ namespace Bog.Api.Web.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetArticle(Guid id)
         {
-            return Ok();
+            var result = await _findBlogArticleCoordinator.Find(id);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            var response = MapArticleResponse(result);
+            return Ok(response);
         }
 
         [HttpGet]
-        [Route("{id}/entry")]
-        public async Task<IActionResult> GetEntryCollection()
+        [Route("{id}/entries")]
+        public async Task<IActionResult> GetArticleEntryCollection()
         {
             return Ok();
         }
 
-        private ArticleResponse MapNewArticleResponse(Article result)
+        private ArticleResponse MapArticleResponse(Article result)
         {
             var links = new Link[]
             {
                 new Link {Relation = LinkRelValueObject.SELF, Hred = Url.Action(nameof(GetArticle), new { id = result.Id})}, 
-                new Link {Relation = LinkRelValueObject.GET_ENTRY_COLLECTION, Hred = Url.Action(nameof(GetEntryCollection), new { id = result.Id})}, 
+                new Link {Relation = LinkRelValueObject.GET_ENTRY_COLLECTION, Hred = Url.Action(nameof(GetArticleEntryCollection), new { id = result.Id})}, 
             };
 
             return new ArticleResponse
