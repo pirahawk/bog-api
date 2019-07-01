@@ -1,10 +1,10 @@
-﻿using Bog.Api.Domain.Models;
-using Bog.Api.Domain.Tests.DbContext;
+﻿using Bog.Api.Domain.Tests.DbContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Bog.Api.Domain.Data;
+using Bog.Api.Domain.Models.Http;
 using Bog.Api.Domain.Tests.Data;
 using Xunit;
 
@@ -16,7 +16,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
         {
             get
             {
-                var entryWithNoMatchingBlog = new NewEntryRequest
+                var entryWithNoMatchingBlog = new ArticleRequest
                 {
                     BlogId = Guid.NewGuid()
                 };
@@ -25,7 +25,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
 
                 var blog = new BlogFixture().Build();
-                var entryWithNoAuthor = new NewEntryRequest
+                var entryWithNoAuthor = new ArticleRequest
                 {
                     BlogId = blog.Id,
                     Author = string.Empty
@@ -37,7 +37,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
         }
         [Theory]
         [MemberData(nameof(ErrorTestCases))]
-        public async Task ReturnsNullWhenErrorConditionsHit(NewEntryRequest request, Blog[] blogs)
+        public async Task ReturnsNullWhenErrorConditionsHit(ArticleRequest request, Blog[] blogs)
         {
             var mockBlogApiDbContextFixture = new MockBlogApiDbContextFixture();
             mockBlogApiDbContextFixture.Blogs = blogs.ToList();
@@ -56,7 +56,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
         public async Task SavesNewEntryWhenConditionsMeet()
         {
             var blog = new BlogFixture().Build();
-            var newEntryRequest = new NewEntryRequest
+            var newEntryRequest = new ArticleRequest
             {
                 BlogId = blog.Id,
                 Author = "Test"

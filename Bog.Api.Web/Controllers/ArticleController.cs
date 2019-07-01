@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bog.Api.Domain.Coordinators;
-using Bog.Api.Domain.Models;
+using Bog.Api.Domain.Data;
+using Bog.Api.Domain.Models.Http;
+using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 
 namespace Bog.Api.Web.Controllers
 {
@@ -17,16 +21,53 @@ namespace Bog.Api.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody]NewEntryRequest newEntry)
+        public async Task<IActionResult> CreateArticle([FromBody]ArticleRequest article)
         {
-            if (newEntry == null)
+            if (article == null)
             {
                 return BadRequest();
             }
 
-            var result = await _createBlogEntryCoordinator.CreateNewEntryAsync(newEntry);
+            var result = await _createBlogEntryCoordinator.CreateNewEntryAsync(article);
 
-            return NoContent();
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
+            var response = MapNewArticleResponse(result);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetArticle(Guid id)
+        {
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("{id}/entry")]
+        public async Task<IActionResult> GetEntryCollection()
+        {
+            return Ok();
+        }
+
+        private ArticleResponse MapNewArticleResponse(Article result)
+        {
+            var links = new Link[]
+            {
+                new Link {Relation = LinkRelValueObject.SELF, Hred = Url.Action(nameof(GetArticle), new { id = result.Id})}, 
+                new Link {Relation = LinkRelValueObject.GET_ENTRY_COLLECTION, Hred = Url.Action(nameof(GetEntryCollection), new { id = result.Id})}, 
+            };
+
+            return new ArticleResponse
+            {
+                Id = result.Id,
+                BlogId = result.BlogId,
+                Author = result.Author,
+                Links = links
+            };
         }
     }
 }

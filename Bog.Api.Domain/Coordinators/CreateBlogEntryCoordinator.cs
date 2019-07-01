@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.DbContext;
-using Bog.Api.Domain.Models;
+using Bog.Api.Domain.Models.Http;
 
 namespace Bog.Api.Domain.Coordinators
 {
@@ -15,10 +15,15 @@ namespace Bog.Api.Domain.Coordinators
         {
             _context = context;
         }
-        public async Task<Article> CreateNewEntryAsync(NewEntryRequest request)
+        public async Task<Article> CreateNewEntryAsync(ArticleRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
+            return await AttemptCreateNewBlogArticle(request);
+        }
+
+        private async Task<Article> AttemptCreateNewBlogArticle(ArticleRequest request)
+        {
             var blog = GetBlogForEntry(request.BlogId);
 
             if (blog == null
@@ -29,7 +34,7 @@ namespace Bog.Api.Domain.Coordinators
 
             var newBlogArticle = new Article()
             {
-                BlogId =  blog.Id,
+                BlogId = blog.Id,
                 Author = request.Author,
                 Created = DateTimeOffset.UtcNow
             };

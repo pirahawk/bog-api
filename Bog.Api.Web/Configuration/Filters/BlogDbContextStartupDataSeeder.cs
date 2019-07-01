@@ -69,6 +69,7 @@ namespace Bog.Api.Web.Configuration.Filters
 
                         var article = new Article()
                         {
+                            Id = Guid.Parse("1b6ee39d-87f2-4e07-94fd-b18c09136acb"),
                             BlogId = testBlog.Id,
                             Author = "Test Guy",
                             Created = DateTimeOffset.UtcNow
