@@ -40,7 +40,11 @@ namespace Bog.Api.Domain.Tests.Coordinators
         public async Task ReturnsNullWhenErrorConditionsHit(ArticleRequest request, Blog[] blogs)
         {
             var mockBlogApiDbContextFixture = new MockBlogApiDbContextFixture();
-            mockBlogApiDbContextFixture.Blogs = blogs.ToList();
+
+            foreach (var blog in blogs)
+            {
+                mockBlogApiDbContextFixture.With(blog, blog.Id);
+            }
 
             var blogApiDbContext = mockBlogApiDbContextFixture.Build();
 
@@ -62,8 +66,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
                 Author = "Test"
             };
 
-            var dbContextFixture = new MockBlogApiDbContextFixture()
-                .WithBlog(blog);
+            var dbContextFixture = new MockBlogApiDbContextFixture().With(blog, blog.Id);
 
             var blogEntryCoordinator = new CreateArticleCoordinatorFixture()
             {

@@ -24,7 +24,7 @@ namespace Bog.Api.Domain.Coordinators
 
         private async Task<Article> AttemptCreateNewBlogArticle(ArticleRequest request)
         {
-            var blog = GetBlogForEntry(request.BlogId);
+            var blog = await GetBlogForEntry(request.BlogId);
 
             if (blog == null
                 || string.IsNullOrWhiteSpace(request.Author))
@@ -45,6 +45,6 @@ namespace Bog.Api.Domain.Coordinators
             return newBlogArticle;
         }
 
-        private Blog GetBlogForEntry(Guid newEntryBlogId) => _context.Blogs.FirstOrDefault(b => b.Id == newEntryBlogId);
+        private async Task<Blog> GetBlogForEntry(Guid newEntryBlogId) => await _context.Find<Blog>(newEntryBlogId);
     }
 }

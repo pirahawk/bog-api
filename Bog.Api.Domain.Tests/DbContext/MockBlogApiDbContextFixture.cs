@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.DbContext;
 using Moq;
@@ -11,27 +12,26 @@ namespace Bog.Api.Domain.Tests.DbContext
         private Mock<IBlogApiDbContext> _mock;
         public Mock<IBlogApiDbContext> Mock => _mock;
 
-        public List<Blog> Blogs { get; set; }
 
         public MockBlogApiDbContextFixture()
         {
-            this.Blogs = new List<Blog>();
             _mock = new Mock<IBlogApiDbContext>();
         }
 
         public IBlogApiDbContext Build()
         {
-            
             _mock.Setup(ctx => ctx.Add(It.IsAny<object>())).Verifiable();
             _mock.Setup(ctx => ctx.SaveChanges()).Verifiable();
-            _mock.Setup(ctx => ctx.Blogs).Returns(Blogs.AsQueryable());
 
             return _mock.Object;
         }
 
-        public MockBlogApiDbContextFixture WithBlog(Blog blog)
+        public MockBlogApiDbContextFixture With<TEntity>(TEntity entity, params object[] keys) where TEntity : class
         {
-            Blogs.Add(blog);
+            _mock.Setup(ctx => ctx.Find<TEntity>(keys))
+                .Returns(async () => await Task.FromResult(entity))
+                .Verifiable();
+
             return this;
         }
     }
