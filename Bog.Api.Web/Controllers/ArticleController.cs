@@ -1,25 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Bog.Api.Domain.Coordinators;
+﻿using Bog.Api.Domain.Coordinators;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.Models.Http;
 using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using System;
+using System.Threading.Tasks;
 
 namespace Bog.Api.Web.Controllers
 {
     [Route("api/article")]
     public class ArticleController : Controller
     {
-        private readonly ICreateBlogEntryCoordinator _createBlogEntryCoordinator;
+        private readonly ICreateArticleCoordinator _createArticleCoordinator;
         private readonly IFindBlogArticleCoordinator _findBlogArticleCoordinator;
+        private readonly IUpdateArticleCoordinator _updateArticleCoordinator;
 
-        public ArticleController(ICreateBlogEntryCoordinator createBlogEntryCoordinator, IFindBlogArticleCoordinator findBlogArticleCoordinator)
+        public ArticleController(ICreateArticleCoordinator createArticleCoordinator, 
+            IFindBlogArticleCoordinator findBlogArticleCoordinator, IUpdateArticleCoordinator updateArticleCoordinator)
         {
-            _createBlogEntryCoordinator = createBlogEntryCoordinator;
+            _createArticleCoordinator = createArticleCoordinator;
             _findBlogArticleCoordinator = findBlogArticleCoordinator;
+            _updateArticleCoordinator = updateArticleCoordinator;
         }
 
         [HttpPost]
@@ -30,7 +32,7 @@ namespace Bog.Api.Web.Controllers
                 return BadRequest();
             }
 
-            var result = await _createBlogEntryCoordinator.CreateNewArticleAsync(article);
+            var result = await _createArticleCoordinator.CreateNewArticleAsync(article);
 
             if (result == null)
             {
@@ -41,8 +43,27 @@ namespace Bog.Api.Web.Controllers
             return Ok(response);
         }
 
+        [HttpPut]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateArticle(Guid id, [FromBody] ArticleRequest article)
+        {
+            if (article == null)
+            {
+                return BadRequest();
+            }
+
+            var result = await _updateArticleCoordinator.TryUpdateArticle(id ,article);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+            return NoContent();
+        }
+
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id:guid}")]
         public async Task<IActionResult> GetArticle(Guid id)
         {
             var result = await _findBlogArticleCoordinator.Find(id);
@@ -57,7 +78,7 @@ namespace Bog.Api.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{id}/entries")]
+        [Route("{id:guid}/entries")]
         public async Task<IActionResult> GetArticleEntryCollection()
         {
             return Ok();

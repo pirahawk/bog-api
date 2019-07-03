@@ -10,8 +10,10 @@ namespace Bog.Api.Web.Configuration
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
-            services.AddTransient<ICreateBlogEntryCoordinator, CreateBlogEntryCoordinator>();
+            services.AddTransient<ICreateArticleCoordinator, CreateArticleCoordinator>();
             services.AddTransient<IFindBlogArticleCoordinator, FindBlogArticleCoordinator>();
+            services.AddTransient<IUpdateArticleCoordinator, UpdateArticleCoordinator>();
+
         }
     }
 }

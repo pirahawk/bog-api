@@ -7,11 +7,11 @@ using Bog.Api.Domain.Models.Http;
 
 namespace Bog.Api.Domain.Coordinators
 {
-    public class CreateBlogEntryCoordinator : ICreateBlogEntryCoordinator
+    public class CreateArticleCoordinator : ICreateArticleCoordinator
     {
         private readonly IBlogApiDbContext _context;
 
-        public CreateBlogEntryCoordinator(IBlogApiDbContext context)
+        public CreateArticleCoordinator(IBlogApiDbContext context)
         {
             _context = context;
         }

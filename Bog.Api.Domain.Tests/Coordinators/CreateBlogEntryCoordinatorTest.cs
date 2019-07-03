@@ -44,7 +44,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
             var blogApiDbContext = mockBlogApiDbContextFixture.Build();
 
-            var blogEntryCoordinator = new CreateBlogEntryCoordinatorFixture()
+            var blogEntryCoordinator = new CreateArticleCoordinatorFixture()
             {
                 Context = blogApiDbContext
             }.Build();
@@ -65,7 +65,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
             var dbContextFixture = new MockBlogApiDbContextFixture()
                 .WithBlog(blog);
 
-            var blogEntryCoordinator = new CreateBlogEntryCoordinatorFixture()
+            var blogEntryCoordinator = new CreateArticleCoordinatorFixture()
             {
                 Context = dbContextFixture.Build()
             }.Build();

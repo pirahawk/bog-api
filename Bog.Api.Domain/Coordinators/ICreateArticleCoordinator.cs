@@ -4,7 +4,7 @@ using Bog.Api.Domain.Models.Http;
 
 namespace Bog.Api.Domain.Coordinators
 {
-    public interface ICreateBlogEntryCoordinator
+    public interface ICreateArticleCoordinator
     {
         Task<Article> CreateNewArticleAsync(ArticleRequest request);
     }
