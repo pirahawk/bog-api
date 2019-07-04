@@ -38,7 +38,8 @@ namespace Bog.Api.Domain.Tests.Coordinators
             var existingArticleId = Guid.NewGuid();
             var updatedArticle = new ArticleRequest
             {
-                Author = "Second"
+                Author = "Second",
+                IsPublished = true
             };
             var articleFixture = new ArticleFixture
             {
@@ -63,6 +64,9 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
             var coordinator = coordinatorFixture.Build();
 
+            Assert.False(existingArticle.Updated.HasValue);
+
+
             Assert.NotEqual(updatedArticle.Author, existingArticle.Author);
 
             var result = await coordinator.TryUpdateArticle(existingArticleId, updatedArticle);
@@ -72,6 +76,8 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
             Assert.True(result);
             Assert.Equal(updatedArticle.Author, existingArticle.Author);
+            Assert.Equal(updatedArticle.IsPublished, existingArticle.IsPublished);
+            Assert.True(existingArticle.Updated.HasValue);
         }
     }
 }

@@ -14,5 +14,14 @@ namespace Bog.Api.Domain.Data
         public string Author { get; set; }
 
         public DateTimeOffset Created { get; set; }
+
+        public DateTimeOffset? Updated { get; set; }
+
+        public bool IsPublished { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public DateTimeOffset? Deleted { get; set; }
+
     }
 }

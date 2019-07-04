@@ -97,6 +97,11 @@ namespace Bog.Api.Web.Controllers
                 Id = result.Id,
                 BlogId = result.BlogId,
                 Author = result.Author,
+                IsPublished = result.IsPublished,
+                Updated = result.Updated,
+                IsDeleted = result.IsDeleted,
+                Deleted = result.Deleted,
+
                 Links = links
             };
         }

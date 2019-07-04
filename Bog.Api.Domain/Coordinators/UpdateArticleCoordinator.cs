@@ -36,6 +36,8 @@ namespace Bog.Api.Domain.Coordinators
         private void UpdateValues(Article existingArticle, ArticleRequest updatedArticle)
         {
             existingArticle.Author = updatedArticle.Author;
+            existingArticle.IsPublished = updatedArticle.IsPublished;
+            existingArticle.Updated = DateTimeOffset.UtcNow;
         }
     }
 }

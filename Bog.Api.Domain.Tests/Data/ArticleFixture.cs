@@ -5,25 +5,36 @@ namespace Bog.Api.Domain.Tests.Data
 {
     public class ArticleFixture
     {
-        public DateTimeOffset Created { get; set; }
 
-        public string Author { get; set; }
+        public Guid Id { get; set; }
 
         public Blog Blog { get; set; }
 
         public Guid BlogId { get; set; }
 
-        public Guid Id { get; set; }
+        public string Author { get; set; }
+
+        public bool IsPublished { get; set; }
+
+        public DateTimeOffset Created { get; set; }
+
+        public DateTimeOffset? Updated { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public DateTimeOffset? Deleted { get; set; }
 
         public ArticleFixture()
         {
             var blogFixture = new BlogFixture();
 
-            this.Id = Guid.NewGuid();
-            this.Blog = blogFixture.Build();
-            this.BlogId = blogFixture.Id;
-            this.Author = "test";
-            this.Created = DateTimeOffset.UtcNow;
+            Id = Guid.NewGuid();
+            Blog = blogFixture.Build();
+            BlogId = blogFixture.Id;
+            Author = "test";
+            IsPublished = false;
+            Created = DateTimeOffset.UtcNow;
+            IsDeleted = false;
         }
 
         public Article Build()
@@ -31,12 +42,17 @@ namespace Bog.Api.Domain.Tests.Data
             return new Article
             {
                 Id = Id,
-                Created = Created,
                 Author = Author,
                 Blog = Blog,
-                BlogId = BlogId
+                BlogId = BlogId,
+                Created = Created,
+                Updated = Updated,
+                Deleted = Deleted,
+                IsDeleted = IsDeleted,
+                IsPublished = IsPublished
             };
         }
 
+        
     }
 }
