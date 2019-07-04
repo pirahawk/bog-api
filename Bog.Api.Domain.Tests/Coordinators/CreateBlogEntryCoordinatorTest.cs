@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bog.Api.Common.Tests.Time;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.Models.Http;
 using Bog.Api.Domain.Tests.Data;
@@ -67,16 +68,20 @@ namespace Bog.Api.Domain.Tests.Coordinators
             };
 
             var dbContextFixture = new MockBlogApiDbContextFixture().With(blog, blog.Id);
+            var clock = new MockClock();
 
             var blogEntryCoordinator = new CreateArticleCoordinatorFixture()
             {
-                Context = dbContextFixture.Build()
+                Context = dbContextFixture.Build(),
+                Clock = clock
             }.Build();
 
             var result = await blogEntryCoordinator.CreateNewArticleAsync(newEntryRequest);
 
             Assert.Equal(newEntryRequest.BlogId, result.BlogId);
             Assert.Equal(newEntryRequest.Author, result.Author);
+            Assert.Equal(clock.Now, result.Created);
+
 
             dbContextFixture.Mock.Verify(ctx => ctx.Add(result));
             dbContextFixture.Mock.Verify(ctx => ctx.SaveChanges());

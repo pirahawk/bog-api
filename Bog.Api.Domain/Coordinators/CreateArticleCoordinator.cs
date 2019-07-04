@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Bog.Api.Common.Time;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.DbContext;
 using Bog.Api.Domain.Models.Http;
@@ -10,10 +11,12 @@ namespace Bog.Api.Domain.Coordinators
     public class CreateArticleCoordinator : ICreateArticleCoordinator
     {
         private readonly IBlogApiDbContext _context;
+        private readonly IClock _clock;
 
-        public CreateArticleCoordinator(IBlogApiDbContext context)
+        public CreateArticleCoordinator(IBlogApiDbContext context, IClock clock)
         {
             _context = context;
+            _clock = clock;
         }
         public async Task<Article> CreateNewArticleAsync(ArticleRequest request)
         {
@@ -36,7 +39,7 @@ namespace Bog.Api.Domain.Coordinators
             {
                 BlogId = blog.Id,
                 Author = request.Author,
-                Created = DateTimeOffset.UtcNow
+                Created = _clock.Now
             };
 
             await _context.Add(newBlogArticle);

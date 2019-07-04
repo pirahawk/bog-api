@@ -22,12 +22,12 @@ namespace Bog.Api.Web
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddDbContext<BlogApiDbContext>((sp, dbCtxBuilder) => { dbCtxBuilder.Options.UseSqlServer(); });
+            services.WithUtilities();
             services.Configure<EntityConfiguration>(_configuration.GetSection("ConnectionStrings"));
             services.AddDbContext<BlogApiDbContext>();
             services.AddTransient<IStartupFilter, BlogDbContextStartupDataSeeder>();
             services.AddTransient<IBlogApiDbContext, BlogApiDbContextAdapter>();
             services.AddMvc();
-
             services.WithDTOCoordinators();
         }
 

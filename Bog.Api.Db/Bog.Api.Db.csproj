@@ -13,6 +13,10 @@
     <Compile Remove="Migrations\20190618211710_AddBlogArticle.Designer.cs" />
     <Compile Remove="Migrations\20190704183733_articleUpdateTimeStamp.cs" />
     <Compile Remove="Migrations\20190704183733_articleUpdateTimeStamp.Designer.cs" />
+    <Compile Remove="Migrations\20190704184943_articlePublishManagement.cs" />
+    <Compile Remove="Migrations\20190704184943_articlePublishManagement.Designer.cs" />
+    <Compile Remove="Migrations\20190704230732_articlePublishingFields.cs" />
+    <Compile Remove="Migrations\20190704230732_articlePublishingFields.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

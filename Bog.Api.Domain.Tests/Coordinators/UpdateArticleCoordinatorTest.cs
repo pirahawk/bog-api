@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Bog.Api.Common.Tests.Time;
+using Bog.Api.Common.Time;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.Models.Http;
 using Bog.Api.Domain.Tests.Data;
@@ -57,9 +59,12 @@ namespace Bog.Api.Domain.Tests.Coordinators
                     return existingArticle;
                 });
 
+            var clock = new MockClock();
+
             var coordinatorFixture = new UpdateArticleCoordinatorFixture
             {
-                Context = contextFixture.Build()
+                Context = contextFixture.Build(),
+                Clock = clock
             };
 
             var coordinator = coordinatorFixture.Build();
@@ -77,7 +82,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
             Assert.True(result);
             Assert.Equal(updatedArticle.Author, existingArticle.Author);
             Assert.Equal(updatedArticle.IsPublished, existingArticle.IsPublished);
-            Assert.True(existingArticle.Updated.HasValue);
+            Assert.Equal(clock.Now, existingArticle.Updated.GetValueOrDefault());
         }
     }
 }

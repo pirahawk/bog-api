@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Bog.Api.Db.Migrations
 {
-    public partial class articlePublishManagement : Migration
+    public partial class articlePublishingFields : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

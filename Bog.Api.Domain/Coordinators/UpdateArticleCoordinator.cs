@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Bog.Api.Common.Time;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.DbContext;
 using Bog.Api.Domain.Models.Http;
@@ -9,10 +10,12 @@ namespace Bog.Api.Domain.Coordinators
     public class UpdateArticleCoordinator : IUpdateArticleCoordinator
     {
         private readonly IBlogApiDbContext _context;
+        private readonly IClock _clock;
 
-        public UpdateArticleCoordinator(IBlogApiDbContext context)
+        public UpdateArticleCoordinator(IBlogApiDbContext context, IClock clock)
         {
             _context = context;
+            _clock = clock;
         }
 
         public async Task<bool> TryUpdateArticle(Guid articleId, ArticleRequest updatedArticle)
@@ -37,7 +40,7 @@ namespace Bog.Api.Domain.Coordinators
         {
             existingArticle.Author = updatedArticle.Author;
             existingArticle.IsPublished = updatedArticle.IsPublished;
-            existingArticle.Updated = DateTimeOffset.UtcNow;
+            existingArticle.Updated = _clock.Now;
         }
     }
 }

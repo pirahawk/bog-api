@@ -40,7 +40,6 @@ namespace Bog.Api.Db.DbContexts
             modelBuilder.Entity<Article>().HasKey(a => a.Id);
             modelBuilder.Entity<Article>().Property(a => a.Author).IsRequired();
             modelBuilder.Entity<Article>().Property(a => a.Created).ValueGeneratedOnAdd();
-            modelBuilder.Entity<Article>().Property(a => a.Updated).ValueGeneratedOnUpdate();
 
             modelBuilder.Entity<Article>()
                 .HasOne(a => a.Blog)

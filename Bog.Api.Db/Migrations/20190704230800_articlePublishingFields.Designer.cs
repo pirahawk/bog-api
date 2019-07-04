@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bog.Api.Db.Migrations
 {
     [DbContext(typeof(BlogApiDbContext))]
-    [Migration("20190704184943_articlePublishManagement")]
-    partial class articlePublishManagement
+    [Migration("20190704230800_articlePublishingFields")]
+    partial class articlePublishingFields
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,8 +40,7 @@ namespace Bog.Api.Db.Migrations
 
                     b.Property<bool>("IsPublished");
 
-                    b.Property<DateTimeOffset?>("Updated")
-                        .ValueGeneratedOnUpdate();
+                    b.Property<DateTimeOffset?>("Updated");
 
                     b.HasKey("Id");
 

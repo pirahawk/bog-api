@@ -38,8 +38,7 @@ namespace Bog.Api.Db.Migrations
 
                     b.Property<bool>("IsPublished");
 
-                    b.Property<DateTimeOffset?>("Updated")
-                        .ValueGeneratedOnUpdate();
+                    b.Property<DateTimeOffset?>("Updated");
 
                     b.HasKey("Id");
 
