@@ -14,4 +14,8 @@
     <Folder Include="Models\Api\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Bog.Api.Common\Bog.Api.Common.csproj" />
+  </ItemGroup>
+
 </Project>

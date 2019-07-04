@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bog.Api.Common\Bog.Api.Common.csproj" />
     <ProjectReference Include="..\Bog.Api.Domain\Bog.Api.Domain.csproj" />
   </ItemGroup>
 
