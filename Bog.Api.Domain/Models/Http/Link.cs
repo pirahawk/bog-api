@@ -3,6 +3,6 @@
     public class Link
     {
         public string Relation { get; set; }
-        public string Hred { get; set; }
+        public string Href { get; set; }
     }
 }

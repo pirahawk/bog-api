@@ -22,6 +22,10 @@ namespace Bog.Api.Domain.Data
         public bool IsDeleted { get; set; }
 
         public DateTimeOffset? Deleted { get; set; }
+    }
+
+    public class Entry
+    {
 
     }
 }

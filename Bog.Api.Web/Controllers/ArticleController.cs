@@ -5,6 +5,7 @@ using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Bog.Api.Web.Controllers
@@ -15,13 +16,17 @@ namespace Bog.Api.Web.Controllers
         private readonly ICreateArticleCoordinator _createArticleCoordinator;
         private readonly IFindBlogArticleCoordinator _findBlogArticleCoordinator;
         private readonly IUpdateArticleCoordinator _updateArticleCoordinator;
+        private readonly IDeleteArticleCoordinator _deleteArticleCoordinator;
 
         public ArticleController(ICreateArticleCoordinator createArticleCoordinator, 
-            IFindBlogArticleCoordinator findBlogArticleCoordinator, IUpdateArticleCoordinator updateArticleCoordinator)
+            IFindBlogArticleCoordinator findBlogArticleCoordinator, 
+            IUpdateArticleCoordinator updateArticleCoordinator, 
+            IDeleteArticleCoordinator deleteArticleCoordinator)
         {
             _createArticleCoordinator = createArticleCoordinator;
             _findBlogArticleCoordinator = findBlogArticleCoordinator;
             _updateArticleCoordinator = updateArticleCoordinator;
+            _deleteArticleCoordinator = deleteArticleCoordinator;
         }
 
         [HttpPost]
@@ -77,6 +82,14 @@ namespace Bog.Api.Web.Controllers
             return Ok(response);
         }
 
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> DeleteArticle(Guid id)
+        {
+            var result = await _deleteArticleCoordinator.TryDeleteArticle(id);
+            return result ? (IActionResult) NoContent() : BadRequest();
+        }
+
         [HttpGet]
         [Route("{id:guid}/entries")]
         public async Task<IActionResult> GetArticleEntryCollection()
@@ -88,8 +101,8 @@ namespace Bog.Api.Web.Controllers
         {
             var links = new Link[]
             {
-                new Link {Relation = LinkRelValueObject.SELF, Hred = Url.Action(nameof(GetArticle), new { id = result.Id})}, 
-                new Link {Relation = LinkRelValueObject.GET_ENTRY_COLLECTION, Hred = Url.Action(nameof(GetArticleEntryCollection), new { id = result.Id})}, 
+                new Link {Relation = LinkRelValueObject.SELF, Href = Url.Action(nameof(GetArticle), new { id = result.Id})}, 
+                new Link {Relation = LinkRelValueObject.GET_ENTRY_COLLECTION, Href = Url.Action(nameof(GetArticleEntryCollection), new { id = result.Id})}, 
             };
 
             return new ArticleResponse

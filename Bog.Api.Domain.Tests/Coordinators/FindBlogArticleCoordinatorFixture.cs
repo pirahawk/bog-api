@@ -10,7 +10,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
         public FindBlogArticleCoordinatorFixture()
         {
-            this.Context = new MockBlogApiDbContextFixture().Build();
+            Context = new MockBlogApiDbContextFixture().Build();
         }
 
         public FindBlogArticleCoordinator Build()

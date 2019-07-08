@@ -13,6 +13,7 @@ namespace Bog.Api.Web.Configuration
             services.AddTransient<ICreateArticleCoordinator, CreateArticleCoordinator>();
             services.AddTransient<IFindBlogArticleCoordinator, FindBlogArticleCoordinator>();
             services.AddTransient<IUpdateArticleCoordinator, UpdateArticleCoordinator>();
+            services.AddTransient<IDeleteArticleCoordinator, DeleteArticleCoordinator>();
 
         }
     }

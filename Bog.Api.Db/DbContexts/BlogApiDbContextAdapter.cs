@@ -1,6 +1,7 @@
 ﻿using Bog.Api.Domain.Data;
 using Bog.Api.Domain.DbContext;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -35,6 +36,14 @@ namespace Bog.Api.Db.DbContexts
             return await _context.FindAsync<TEntity>(keyValues);
         }
 
+        public void Delete<TEntity>(params TEntity[] entities) where TEntity : class
+        {
+            Delete(entities.AsEnumerable());
+        }
 
+        public void Delete<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+        {
+            _context.RemoveRange(entities);
+        }
     }
 }

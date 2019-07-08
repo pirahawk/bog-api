@@ -7,5 +7,6 @@ namespace Bog.Api.Domain.DbContext
         Task<int> SaveChanges();
         Task Add<TEntity>(params TEntity[] newEntities);
         Task<TEntity> Find<TEntity>(params object[] keyValues) where TEntity : class;
+        void Delete<TEntity>(params TEntity[] entities) where TEntity : class;
     }
 }
