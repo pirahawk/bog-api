@@ -1,5 +1,5 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace Bog.Api.Domain.Data
 {
@@ -22,10 +22,7 @@ namespace Bog.Api.Domain.Data
         public bool IsDeleted { get; set; }
 
         public DateTimeOffset? Deleted { get; set; }
-    }
 
-    public class Entry
-    {
-
+        public IEnumerable<EntryContent> ArticleEntries { get; set; }
     }
 }

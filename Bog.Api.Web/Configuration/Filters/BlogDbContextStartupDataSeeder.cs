@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Bog.Api.Common.Time;
 using Bog.Api.Db.DbContexts;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.Values;
@@ -16,11 +17,13 @@ namespace Bog.Api.Web.Configuration.Filters
     {
         private readonly ILogger<BlogDbContextStartupDataSeeder> _logger;
         private readonly IHostingEnvironment _env;
+        private readonly IClock _clock;
 
-        public BlogDbContextStartupDataSeeder(ILogger<BlogDbContextStartupDataSeeder> logger, IHostingEnvironment env)
+        public BlogDbContextStartupDataSeeder(ILogger<BlogDbContextStartupDataSeeder> logger, IHostingEnvironment env, IClock clock)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _env = env;
+            _clock = clock;
         }
 
         public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
@@ -72,10 +75,20 @@ namespace Bog.Api.Web.Configuration.Filters
                             Id = Guid.Parse("1b6ee39d-87f2-4e07-94fd-b18c09136acb"),
                             BlogId = testBlog.Id,
                             Author = "Test Guy",
-                            Created = DateTimeOffset.UtcNow
+                            Created = _clock.Now
                         };
 
                         dbContext.Add(article);
+
+                        var entry = new EntryContent()
+                        {
+                            Id = Guid.Parse("78889afc-9baa-4d3f-ae84-61fade9bc82f"),
+                            ArticleId = article.Id,
+                            Created = _clock.Now
+                        };
+
+                        dbContext.Add(entry);
+
                         dbContext.SaveChanges();
 
                         transaction.Commit();

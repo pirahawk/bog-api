@@ -5,7 +5,6 @@ using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using System;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace Bog.Api.Web.Controllers
@@ -117,6 +116,17 @@ namespace Bog.Api.Web.Controllers
 
                 Links = links
             };
+        }
+    }
+
+    [Route("api/entry")]
+    public class EntriesController: Controller
+    {
+        [HttpGet]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> GetArticle(Guid id)
+        {
+            return null;
         }
     }
 }
