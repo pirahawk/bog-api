@@ -17,12 +17,12 @@ namespace Bog.Api.Db.DbContexts
         public DbSet<Article> Articles { get; set; }
         public DbSet<EntryContent> EntryContents { get; set; }
 
-        public BlogApiDbContext(IOptionsMonitor<EntityConfiguration> optionsAccessor, ILogger<BlogApiDbContext> logger)
+        public BlogApiDbContext(IOptionsMonitor<EntityConfiguration> entityContextOptionsAccessor, ILogger<BlogApiDbContext> logger)
         {
-            if (optionsAccessor.CurrentValue == null) throw new ArgumentNullException(nameof(optionsAccessor));
+            if (entityContextOptionsAccessor.CurrentValue == null) throw new ArgumentNullException(nameof(entityContextOptionsAccessor));
             _logger = logger;
 
-            _connection = optionsAccessor.CurrentValue.BlogApiDbContext;
+            _connection = entityContextOptionsAccessor.CurrentValue.BlogApiDbContext;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

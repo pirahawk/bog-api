@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Blog.Api.BlobStorage\Blog.Api.BlobStorage.csproj" />
+    <ProjectReference Include="..\Bog.Api.BlobStorage\Bog.Api.BlobStorage.csproj" />
     <ProjectReference Include="..\Bog.Api.Common\Bog.Api.Common.csproj" />
     <ProjectReference Include="..\Bog.Api.Db\Bog.Api.Db.csproj" />
     <ProjectReference Include="..\Bog.Api.Domain\Bog.Api.Domain.csproj" />

@@ -1,5 +1,4 @@
-﻿using Bog.Api.Domain.Data;
-using Bog.Api.Domain.DbContext;
+﻿using Bog.Api.Domain.DbContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;

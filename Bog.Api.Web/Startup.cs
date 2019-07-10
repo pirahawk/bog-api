@@ -1,5 +1,4 @@
 ﻿using Bog.Api.Db.DbContexts;
-using Bog.Api.Domain.Configuration;
 using Bog.Api.Domain.DbContext;
 using Bog.Api.Web.Configuration;
 using Bog.Api.Web.Configuration.Filters;
@@ -23,7 +22,7 @@ namespace Bog.Api.Web
         {
             //services.AddDbContext<BlogApiDbContext>((sp, dbCtxBuilder) => { dbCtxBuilder.Options.UseSqlServer(); });
             services.WithUtilities();
-            services.Configure<EntityConfiguration>(_configuration.GetSection("ConnectionStrings"));
+            services.WithApiConfiguration(_configuration);
             services.AddDbContext<BlogApiDbContext>();
             services.AddTransient<IStartupFilter, BlogDbContextStartupDataSeeder>();
             services.AddTransient<IBlogApiDbContext, BlogApiDbContextAdapter>();

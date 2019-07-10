@@ -1,8 +1,8 @@
-﻿using System.IO;
-using System.Linq;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
+using System.IO;
+using System.Linq;
 
 namespace Bog.Api.Web.Configuration
 {

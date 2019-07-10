@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Bog.Api.Common.Time;
+﻿using Bog.Api.Common.Time;
 using Bog.Api.Db.DbContexts;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.Values;
@@ -10,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
 
 namespace Bog.Api.Web.Configuration.Filters
 {
@@ -63,7 +62,7 @@ namespace Bog.Api.Web.Configuration.Filters
                 {
                     try
                     {
-                        var testBlog = new Blog
+                        var testBlog = new Blog()
                         {
                             Id = Guid.Parse("8724c4c5-7956-484a-896b-f379fdbc7d8c")
                         };

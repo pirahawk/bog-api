@@ -1,0 +1,5 @@
+{
+  "BlobStorageConfiguration": {
+    "ConnectionString": "UseDevelopmentStorage=true"
+  } 
+}
