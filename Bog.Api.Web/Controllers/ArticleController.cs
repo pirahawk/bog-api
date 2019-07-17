@@ -118,15 +118,4 @@ namespace Bog.Api.Web.Controllers
             };
         }
     }
-
-    [Route("api/entry")]
-    public class EntriesController: Controller
-    {
-        [HttpGet]
-        [Route("{id:guid}")]
-        public async Task<IActionResult> GetArticle(Guid id)
-        {
-            return null;
-        }
-    }
 }

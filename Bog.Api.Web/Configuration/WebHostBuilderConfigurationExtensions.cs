@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
@@ -16,8 +17,9 @@ namespace Bog.Api.Web.Configuration
 
         private static void AddConfigurationJsonFiles(WebHostBuilderContext context, IConfigurationBuilder builder)
         {
+            var configurationDirectory = $"configuration{Path.PathSeparator}json";
             var directoryContents = context.HostingEnvironment.ContentRootFileProvider
-                .GetDirectoryContents("configuration")
+                .GetDirectoryContents("configuration/json")
                 .Where(fi => fi.Exists && !fi.IsDirectory && Path.GetExtension((string) fi.PhysicalPath).Contains("json"))
                 .ToArray();
 
