@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Bog.Api.Common.Time;
+﻿using Bog.Api.Common.Time;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.DbContext;
 using Bog.Api.Domain.Models.Http;
+using System;
+using System.Threading.Tasks;
 
 namespace Bog.Api.Domain.Coordinators
 {

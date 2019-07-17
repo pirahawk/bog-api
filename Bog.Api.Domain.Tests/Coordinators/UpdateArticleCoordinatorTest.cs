@@ -1,12 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using Bog.Api.Common.Tests.Time;
-using Bog.Api.Common.Time;
+﻿using Bog.Api.Common.Tests.Time;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.Models.Http;
 using Bog.Api.Domain.Tests.Data;
 using Bog.Api.Domain.Tests.DbContext;
 using Moq;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Bog.Api.Domain.Tests.Coordinators

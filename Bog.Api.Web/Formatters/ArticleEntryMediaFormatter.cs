@@ -43,24 +43,20 @@ namespace Bog.Api.Web.Formatters
 
         public override async Task<InputFormatterResult> ReadAsync(InputFormatterContext context)
         {
-            var blogPost = new ArticleEntry();
-
             var httpContextRequest = context.HttpContext.Request;
 
-            if (!httpContextRequest.ContentLength.HasValue 
-                || httpContextRequest.ContentLength == 0)
+            if (!httpContextRequest.ContentLength.HasValue || httpContextRequest.ContentLength == 0)
             {
                 return await InputFormatterResult.FailureAsync();
             }
 
             using (var reader = context.ReaderFactory(httpContextRequest.Body, Encoding.UTF8))
             {
+                var blogPost = new ArticleEntry();
                 string readToEndAsync = await reader.ReadToEndAsync();
                 blogPost.Content = readToEndAsync;
+                return await InputFormatterResult.SuccessAsync(blogPost);
             }
-
-
-            return await InputFormatterResult.SuccessAsync(blogPost);
         }
 
         private static bool CheckType(Type type)
