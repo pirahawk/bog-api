@@ -49,12 +49,22 @@ namespace Bog.Api.BlobStorage
             return account;
         }
 
-
         public async Task<bool> TryCreateContainer(BlobStorageContainer container)
         {
             var blobName = _blobNameLookup[container];
             var cloudBlobContainer = _cloudBlobClient.GetContainerReference(blobName);
-            return await cloudBlobContainer.CreateIfNotExistsAsync();
+            var isNewlyCreated = await cloudBlobContainer.CreateIfNotExistsAsync();
+
+            if (isNewlyCreated)
+            {
+                BlobContainerPermissions permissions = new BlobContainerPermissions
+                {
+                    PublicAccess = BlobContainerPublicAccessType.Blob,
+                };
+                await cloudBlobContainer.SetPermissionsAsync(permissions);
+            }
+
+            return isNewlyCreated;
         }
     }
 }

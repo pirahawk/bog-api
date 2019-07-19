@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Bog.Api.Common.Time;
 using Bog.Api.Domain.DbContext;
 using Bog.Api.Domain.Values;
@@ -28,19 +29,22 @@ namespace Bog.Api.Web.Configuration.Filters
             return (builder) =>
             {
                 _logger.LogInformation(LogEvenIdsValueObject.BlobStorage, "Configuring Azure Blob Storage containers");
-
-                using (var serviceScope = builder.ApplicationServices.CreateScope())
-                {
-                    var blobStore = serviceScope.ServiceProvider.GetService<IBlobStore>();
-                    blobStore.TryCreateContainer(BlobStorageContainer.MARKDOWN_ARTICLE_ENTRIES_CONTAINER);
-                    _logger.LogInformation(LogEvenIdsValueObject.BlobStorage, $"Created Container: {BlobStorageValueObjects.MARKDOWN_ARTICLE_ENTRIES_CONTAINER}");
-
-                    blobStore.TryCreateContainer(BlobStorageContainer.TRANSLATED_ARTICLE_ENTRIES_CONTAINER);
-                    _logger.LogInformation(LogEvenIdsValueObject.BlobStorage, $"Created Container: {BlobStorageValueObjects.TRANSLATED_ARTICLE_ENTRIES_CONTAINER}");
-                }
-
+                Task.WaitAll(CreateRootBlobContainers(builder));
                 next(builder);
             };
+        }
+
+        public async Task CreateRootBlobContainers(IApplicationBuilder builder)
+        {
+            using (var serviceScope = builder.ApplicationServices.CreateScope())
+            {
+                var blobStore = serviceScope.ServiceProvider.GetService<IBlobStore>();
+                await blobStore.TryCreateContainer(BlobStorageContainer.MARKDOWN_ARTICLE_ENTRIES_CONTAINER);
+                _logger.LogInformation(LogEvenIdsValueObject.BlobStorage, $"Created Container: {BlobStorageValueObjects.MARKDOWN_ARTICLE_ENTRIES_CONTAINER}");
+
+                await blobStore.TryCreateContainer(BlobStorageContainer.TRANSLATED_ARTICLE_ENTRIES_CONTAINER);
+                _logger.LogInformation(LogEvenIdsValueObject.BlobStorage, $"Created Container: {BlobStorageValueObjects.TRANSLATED_ARTICLE_ENTRIES_CONTAINER}");
+            }
         }
     }
 }
