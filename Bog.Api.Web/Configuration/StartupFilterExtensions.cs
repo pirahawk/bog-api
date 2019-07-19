@@ -9,6 +9,7 @@ namespace Bog.Api.Web.Configuration
         public static void WithBlogStartupFilters(this IServiceCollection services)
         {
             services.AddTransient<IStartupFilter, BlogDbContextStartupDataSeeder>();
+            services.AddTransient<IStartupFilter, BlobStoreContainerStartupFilter>();
         }
     }
 }
