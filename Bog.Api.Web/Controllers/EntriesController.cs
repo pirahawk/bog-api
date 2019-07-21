@@ -1,16 +1,18 @@
-﻿using Bog.Api.Domain.Models.Http;
+﻿using Bog.Api.Domain.Configuration;
+using Bog.Api.Domain.Coordinators;
+using Bog.Api.Domain.Data;
+using Bog.Api.Domain.Models.Http;
+using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using Bog.Api.Domain.Coordinators;
-using Bog.Api.Domain.Data;
-using Bog.Api.Domain.Values;
 
 namespace Bog.Api.Web.Controllers
 {
     [Route("api/entry")]
     public class EntriesController: Controller
     {
+        private readonly BlogApiSettings _apiSettings;
         private readonly ICreateArticleEntryCoordinator _createEntryCoordinator;
 
         public EntriesController(ICreateArticleEntryCoordinator createEntryCoordinator)
@@ -20,7 +22,7 @@ namespace Bog.Api.Web.Controllers
 
         [HttpPost]
         [Route("{articleId:guid}")]
-        [RequestSizeLimit(20971520)] // 20 MB limit
+        [RequestSizeLimit(BlogApiSettings.MAX_ENTRY_REQUEST_LIMIT_BYTES)]
         public async Task<IActionResult> AddArticleEntry(Guid articleId, [FromBody]ArticleEntry post)
         {
             var result = await _createEntryCoordinator.CreateArticleEntry(articleId, post);
@@ -46,8 +48,6 @@ namespace Bog.Api.Web.Controllers
                 Id = result.Id,
                 ArticleId = result.ArticleId,
                 Created = result.Created,
-                Deleted = result.Deleted,
-                Updated = result.Updated,
                 Links = links,
             };
         }

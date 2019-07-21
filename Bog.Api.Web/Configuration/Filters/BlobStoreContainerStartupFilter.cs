@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Bog.Api.Common.Time;
+﻿using Bog.Api.Common.Time;
 using Bog.Api.Domain.DbContext;
 using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace Bog.Api.Web.Configuration.Filters
 {
