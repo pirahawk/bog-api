@@ -13,11 +13,11 @@ namespace Bog.Api.Web.Controllers
     public class EntriesController: Controller
     {
         private readonly BlogApiSettings _apiSettings;
-        private readonly ICreateArticleEntryCoordinator _createEntryCoordinator;
+        private readonly ICreateAndPersistArticleEntryStrategy _persistArticleEntryStrategy;
 
-        public EntriesController(ICreateArticleEntryCoordinator createEntryCoordinator)
+        public EntriesController(ICreateAndPersistArticleEntryStrategy persistArticleEntryStrategy)
         {
-            _createEntryCoordinator = createEntryCoordinator;
+            _persistArticleEntryStrategy = persistArticleEntryStrategy;
         }
 
         [HttpPost]
@@ -25,7 +25,7 @@ namespace Bog.Api.Web.Controllers
         [RequestSizeLimit(BlogApiSettings.MAX_ENTRY_REQUEST_LIMIT_BYTES)]
         public async Task<IActionResult> AddArticleEntry(Guid articleId, [FromBody]ArticleEntry post)
         {
-            var result = await _createEntryCoordinator.CreateArticleEntry(articleId, post);
+            var result = await _persistArticleEntryStrategy.PersistArticleEntryAsync(articleId, post);
 
             if (result == null)
             {

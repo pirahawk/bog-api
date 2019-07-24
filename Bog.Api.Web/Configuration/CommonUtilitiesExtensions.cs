@@ -1,6 +1,7 @@
 ﻿using Bog.Api.BlobStorage;
 using Bog.Api.Common.Time;
 using Bog.Api.Db.DbContexts;
+using Bog.Api.Domain.BlobStore;
 using Bog.Api.Domain.DbContext;
 using Microsoft.Extensions.DependencyInjection;
 

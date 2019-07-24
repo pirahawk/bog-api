@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Bog.Api.Domain.BlobStore;
 using Bog.Api.Domain.Configuration;
-using Bog.Api.Domain.DbContext;
 using Bog.Api.Domain.Values;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Bog.Api.BlobStorage
 {
@@ -51,8 +51,7 @@ namespace Bog.Api.BlobStorage
 
         public async Task<bool> TryCreateContainer(BlobStorageContainer container)
         {
-            var blobName = _blobNameLookup[container];
-            var cloudBlobContainer = _cloudBlobClient.GetContainerReference(blobName);
+            var cloudBlobContainer = GetCloudBlobContainer(container);
             var isNewlyCreated = await cloudBlobContainer.CreateIfNotExistsAsync();
 
             if (isNewlyCreated)
@@ -65,6 +64,23 @@ namespace Bog.Api.BlobStorage
             }
 
             return isNewlyCreated;
+        }
+
+        public async Task PersistArticleEntryAsync(BlobStorageContainer container, Guid articleId, Guid entryContentId, string contentBase64)
+        {
+            if (string.IsNullOrWhiteSpace(contentBase64))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(contentBase64));
+
+            var cloudBlobContainer = GetCloudBlobContainer(container);
+            var cloudBlobDirectory = cloudBlobContainer.GetDirectoryReference($"{articleId}");
+            var blockBlobReference = cloudBlobDirectory.GetBlockBlobReference($"{entryContentId}");
+            await blockBlobReference.UploadTextAsync(contentBase64);
+        }
+
+        private CloudBlobContainer GetCloudBlobContainer(BlobStorageContainer container)
+        {
+            var blobName = _blobNameLookup[container];
+            return _cloudBlobClient.GetContainerReference(blobName);
         }
     }
 }

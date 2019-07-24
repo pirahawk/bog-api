@@ -52,7 +52,5 @@ namespace Bog.Api.Domain.Tests.Data
                 IsPublished = IsPublished
             };
         }
-
-        
     }
 }

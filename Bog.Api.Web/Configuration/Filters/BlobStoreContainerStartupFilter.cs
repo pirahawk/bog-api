@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using Bog.Api.Domain.BlobStore;
 
 namespace Bog.Api.Web.Configuration.Filters
 {
