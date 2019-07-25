@@ -16,6 +16,8 @@ namespace Bog.Api.Db.DbContexts
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Article> Articles { get; set; }
         public DbSet<EntryContent> EntryContents { get; set; }
+        public DbSet<EntryMedia> EntryMedia { get; set; }
+
 
         public BlogApiDbContext(IOptionsMonitor<EntityConfiguration> entityContextOptionsAccessor, ILogger<BlogApiDbContext> logger)
         {
@@ -52,6 +54,13 @@ namespace Bog.Api.Db.DbContexts
                 .HasOne(ec => ec.Article)
                 .WithMany(a => a.ArticleEntries)
                 .HasForeignKey(ec => ec.ArticleId);
+
+            modelBuilder.Entity<EntryMedia>().HasKey(em => em.Id);
+            modelBuilder.Entity<EntryMedia>()
+                .HasOne(em => em.EntryContent)
+                .WithMany(ec => ec.EntryMedia)
+                .HasForeignKey(em => em.EntryContentId);
+
 
             base.OnModelCreating(modelBuilder);
 

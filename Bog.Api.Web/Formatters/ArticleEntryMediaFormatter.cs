@@ -1,11 +1,10 @@
 ﻿using Bog.Api.Domain.Models.Http;
+using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
 using System;
-using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Bog.Api.Domain.Values;
 
 namespace Bog.Api.Web.Formatters
 {
