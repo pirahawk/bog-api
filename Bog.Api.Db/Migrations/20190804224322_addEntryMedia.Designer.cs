@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bog.Api.Db.Migrations
 {
     [DbContext(typeof(BlogApiDbContext))]
-    [Migration("20190725222213_addEntryMedia")]
+    [Migration("20190804224322_addEntryMedia")]
     partial class addEntryMedia
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,9 +82,18 @@ namespace Bog.Api.Db.Migrations
 
                     b.Property<Guid>("BlobFileName");
 
+                    b.Property<string>("ContentType")
+                        .IsRequired();
+
+                    b.Property<DateTimeOffset>("Created");
+
                     b.Property<Guid>("EntryContentId");
 
-                    b.Property<string>("FileName");
+                    b.Property<string>("FileName")
+                        .IsRequired();
+
+                    b.Property<string>("MD5Base64Hash")
+                        .IsRequired();
 
                     b.HasKey("Id");
 

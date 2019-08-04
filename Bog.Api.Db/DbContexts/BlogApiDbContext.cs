@@ -56,6 +56,11 @@ namespace Bog.Api.Db.DbContexts
                 .HasForeignKey(ec => ec.ArticleId);
 
             modelBuilder.Entity<EntryMedia>().HasKey(em => em.Id);
+            modelBuilder.Entity<EntryMedia>().Property(em => em.FileName).IsRequired();
+            modelBuilder.Entity<EntryMedia>().Property(em => em.ContentType).IsRequired();
+            modelBuilder.Entity<EntryMedia>().Property(em => em.BlobFileName).IsRequired();
+            modelBuilder.Entity<EntryMedia>().Property(em => em.MD5Base64Hash).IsRequired();
+
             modelBuilder.Entity<EntryMedia>()
                 .HasOne(em => em.EntryContent)
                 .WithMany(ec => ec.EntryMedia)

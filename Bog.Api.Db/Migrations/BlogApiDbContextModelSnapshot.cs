@@ -80,9 +80,18 @@ namespace Bog.Api.Db.Migrations
 
                     b.Property<Guid>("BlobFileName");
 
+                    b.Property<string>("ContentType")
+                        .IsRequired();
+
+                    b.Property<DateTimeOffset>("Created");
+
                     b.Property<Guid>("EntryContentId");
 
-                    b.Property<string>("FileName");
+                    b.Property<string>("FileName")
+                        .IsRequired();
+
+                    b.Property<string>("MD5Base64Hash")
+                        .IsRequired();
 
                     b.HasKey("Id");
 

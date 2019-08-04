@@ -19,6 +19,18 @@
     <Compile Remove="Migrations\20190704230732_articlePublishingFields.Designer.cs" />
     <Compile Remove="Migrations\20190708203337_addEntry.cs" />
     <Compile Remove="Migrations\20190708203337_addEntry.Designer.cs" />
+    <Compile Remove="Migrations\20190725222213_addEntryMedia.cs" />
+    <Compile Remove="Migrations\20190725222213_addEntryMedia.Designer.cs" />
+    <Compile Remove="Migrations\20190804185031_edit-entryMediaProperties.cs" />
+    <Compile Remove="Migrations\20190804185031_edit-entryMediaProperties.Designer.cs" />
+    <Compile Remove="Migrations\20190804193711_edit-entryMediaProperties-contentType.cs" />
+    <Compile Remove="Migrations\20190804193711_edit-entryMediaProperties-contentType.Designer.cs" />
+    <Compile Remove="Migrations\20190804194256_addEntryMedia.cs" />
+    <Compile Remove="Migrations\20190804194256_addEntryMedia.Designer.cs" />
+    <Compile Remove="Migrations\20190804223545_addEntryMedia.cs" />
+    <Compile Remove="Migrations\20190804223545_addEntryMedia.Designer.cs" />
+    <Compile Remove="Migrations\20190804223725_addEntryMedia.cs" />
+    <Compile Remove="Migrations\20190804223725_addEntryMedia.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

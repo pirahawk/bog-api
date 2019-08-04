@@ -44,12 +44,25 @@ namespace Bog.Api.Web.Formatters
                 var base64Hash = mediaBytes.ComputeMD5HashBase54();
 
                 mediaRequest.MediaContent = mediaBytes;
-                mediaRequest.ContentHashBase64 = base64Hash;
+                mediaRequest.MD5Base64Hash = base64Hash;
             }
 
             mediaRequest.FileName = TryGetFileName(context);
+            mediaRequest.ContentType = TryMediaGetContentType(context);
 
             return await InputFormatterResult.SuccessAsync(mediaRequest);
+        }
+
+        private string TryMediaGetContentType(InputFormatterContext context)
+        {
+            if (!context.HttpContext.Request.Headers.ContainsKey(HeaderNames.ContentType))
+            {
+                return null;
+            }
+
+            var contentTypeHeader = context.HttpContext.Request.Headers[HeaderNames.ContentType].FirstOrDefault();
+
+            return contentTypeHeader;
         }
 
         private string TryGetFileName(InputFormatterContext context)
@@ -62,7 +75,7 @@ namespace Bog.Api.Web.Formatters
             }
 
             var stringValues = httpContextRequest.Headers[HeaderNames.ContentDisposition];
-            var contentDispositionString = stringValues.ToArray().FirstOrDefault();
+            var contentDispositionString = stringValues.FirstOrDefault();
 
             if(!ContentDispositionHeaderValue.TryParse(new StringSegment(contentDispositionString), out var dispositionHeaderValue))
             {

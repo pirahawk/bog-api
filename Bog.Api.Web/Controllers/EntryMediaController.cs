@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using Bog.Api.Domain.Coordinators;
 using Microsoft.Net.Http.Headers;
 
 namespace Bog.Api.Web.Controllers
@@ -10,6 +11,13 @@ namespace Bog.Api.Web.Controllers
     [Route("api/media")]
     public class EntryMediaController : Controller
     {
+        private readonly ICreateAndPersistArticleEntryMediaStrategy _createStrategy;
+
+        public EntryMediaController(ICreateAndPersistArticleEntryMediaStrategy createStrategy)
+        {
+            _createStrategy = createStrategy;
+        }
+
         [Route("{entryId:guid}")]
         [HttpPost]
         public async Task<IActionResult> UploadMediaContent(Guid entryId, [FromBody] ArticleEntryMediaRequest media)
@@ -19,14 +27,20 @@ namespace Bog.Api.Web.Controllers
                 return BadRequest("Could not establish article media from request");
             }
 
-            if (media.FileName == null)
+            if (string.IsNullOrWhiteSpace(media.FileName))
             {
                 return BadRequest($"Could not parse filename from {HeaderNames.ContentDisposition} header");
             }
 
+            if (string.IsNullOrWhiteSpace(media.ContentType))
+            {
+                return BadRequest($"Could not parse content-type from {HeaderNames.ContentType} header");
+            }
+
             media.EntryId = entryId;
 
-            
+            var entryMedia = await _createStrategy.PersistArticleEntryMediaAsync(media);
+
             return Ok();
         }
 

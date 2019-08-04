@@ -13,8 +13,11 @@ namespace Bog.Api.Db.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     EntryContentId = table.Column<Guid>(nullable: false),
-                    FileName = table.Column<string>(nullable: true),
-                    BlobFileName = table.Column<Guid>(nullable: false)
+                    FileName = table.Column<string>(nullable: false),
+                    ContentType = table.Column<string>(nullable: false),
+                    BlobFileName = table.Column<Guid>(nullable: false),
+                    Created = table.Column<DateTimeOffset>(nullable: false),
+                    MD5Base64Hash = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
