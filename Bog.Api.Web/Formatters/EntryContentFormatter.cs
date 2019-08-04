@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Bog.Api.Web.Formatters
 {
-    public class ArticleEntryMediaFormatter : TextInputFormatter
+    public class EntryContentFormatter : TextInputFormatter
     {
-        public ArticleEntryMediaFormatter()
+        public EntryContentFormatter()
         {
             SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse(MediaTypesValueObject.TEXT_PLAIN));
         }

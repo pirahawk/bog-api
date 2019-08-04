@@ -1,4 +1,5 @@
-﻿using Bog.Api.Web.Formatters;
+﻿using Bog.Api.Web.Controllers;
+using Bog.Api.Web.Formatters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,7 +17,9 @@ namespace Bog.Api.Web.Configuration
             config.RespectBrowserAcceptHeader = true;
             config.ReturnHttpNotAcceptable = true;
 
-            config.InputFormatters.Add(new ArticleEntryMediaFormatter());
+            config.InputFormatters.Add(new EntryContentFormatter());
+            config.InputFormatters.Add(new ArticleEntryMediaRequestFormatter());
+
         }
     }
 }

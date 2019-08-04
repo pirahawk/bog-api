@@ -51,6 +51,5 @@ namespace Bog.Api.Web.Controllers
                 Links = links,
             };
         }
-
     }
 }
