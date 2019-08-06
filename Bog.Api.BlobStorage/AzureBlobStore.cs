@@ -17,11 +17,7 @@ namespace Bog.Api.BlobStorage
         private readonly Lazy<CloudStorageAccount> _storageAccountProvider;
         private CloudStorageAccount _cloudStorageAccount => _storageAccountProvider.Value;
         private CloudBlobClient _cloudBlobClient => _cloudStorageAccount.CreateCloudBlobClient();
-        private readonly IDictionary<BlobStorageContainer, string> _blobNameLookup = new Dictionary<BlobStorageContainer, string>()
-        {
-            {BlobStorageContainer.MARKDOWN_ARTICLE_ENTRIES_CONTAINER, BlobStorageValueObjects.MARKDOWN_ARTICLE_ENTRIES_CONTAINER},
-            {BlobStorageContainer.TRANSLATED_ARTICLE_ENTRIES_CONTAINER, BlobStorageValueObjects.TRANSLATED_ARTICLE_ENTRIES_CONTAINER}
-        };
+        
 
         public AzureBlobStore(IOptionsMonitor<BlobStorageConfiguration> blobStorageOptionsAccessor, ILogger<AzureBlobStore> logger)
         {
@@ -66,20 +62,37 @@ namespace Bog.Api.BlobStorage
             return isNewlyCreated;
         }
 
-        public async Task PersistArticleEntryAsync(BlobStorageContainer container, Guid articleId, Guid entryContentId, string contentBase64)
+        public async Task<string> PersistArticleEntryAsync(BlobStorageContainer container, Guid articleId, Guid entryContentId, string contentBase64)
         {
             if (string.IsNullOrWhiteSpace(contentBase64))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(contentBase64));
 
-            var cloudBlobContainer = GetCloudBlobContainer(container);
-            var cloudBlobDirectory = cloudBlobContainer.GetDirectoryReference($"{articleId}");
-            var blockBlobReference = cloudBlobDirectory.GetBlockBlobReference($"{entryContentId}");
-            await blockBlobReference.UploadTextAsync(contentBase64);
+            var articleEntryBlobContainer = GetCloudBlobContainer(container);
+            var articleBlobDirectory = articleEntryBlobContainer.GetDirectoryReference($"{articleId}");
+            var entryContentBlob = articleBlobDirectory.GetBlockBlobReference($"{entryContentId}");
+            await entryContentBlob.UploadTextAsync(contentBase64);
+
+            return entryContentBlob.Uri.AbsoluteUri;
+        }
+
+        public async Task<string> PersistArticleEntryMedia(Guid entryMediaId, Guid entryContentId, byte[] mediaContent, string contentType)
+        {
+            if (mediaContent == null) throw new ArgumentNullException(nameof(mediaContent));
+            if (string.IsNullOrWhiteSpace(contentType)) throw new ArgumentNullException(nameof(contentType));
+
+            var entryMediaBlobContainer = GetCloudBlobContainer(BlobStorageContainer.ENTRY_MEDIA_CONTAINER);
+            var entryContentBlobDirectory = entryMediaBlobContainer.GetDirectoryReference($"{entryContentId}");
+            var entryMediaBlob = entryContentBlobDirectory.GetBlockBlobReference($"{entryMediaId}");
+
+            entryMediaBlob.Properties.ContentType = contentType;
+            await entryMediaBlob.UploadFromByteArrayAsync(mediaContent, 0, mediaContent.Length);
+
+            return entryMediaBlob.Uri.AbsoluteUri;
         }
 
         private CloudBlobContainer GetCloudBlobContainer(BlobStorageContainer container)
         {
-            var blobName = _blobNameLookup[container];
+            var blobName = BlobStorageLookupValueObjects.BlobNameMap[container];
             return _cloudBlobClient.GetContainerReference(blobName);
         }
     }

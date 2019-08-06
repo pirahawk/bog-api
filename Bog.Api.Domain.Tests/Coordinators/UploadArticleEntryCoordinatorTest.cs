@@ -29,7 +29,10 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
             await coordinator.UploadArticleEntry(entryContent, articleEntry);
 
-            mock.Verify(m => m.PersistArticleEntryAsync(BlobStorageContainer.MARKDOWN_ARTICLE_ENTRIES_CONTAINER, entryContent.ArticleId, entryContent.Id, base64));
+            mock.Verify(m => m.PersistArticleEntryAsync(BlobStorageContainer.MARKDOWN_ARTICLE_ENTRIES_CONTAINER, 
+                entryContent.ArticleId, 
+                entryContent.Id, 
+                base64));
         }
     }
 }

@@ -19,6 +19,7 @@ namespace Bog.Api.Web.Configuration
             services.AddTransient<ICreateAndPersistArticleEntryStrategy, CreateAndPersistArticleEntryStrategy>();
             services.AddTransient<ICreateAndPersistArticleEntryMediaStrategy, CreateAndPersistArticleEntryMediaStrategy>();
             services.AddTransient<ICreateEntryMediaCoordinator, CreateEntryMediaCoordinator>();
+            services.AddTransient<IUploadArticleEntryMediaCoordinator, UploadArticleEntryMediaCoordinator>();
         }
     }
 }

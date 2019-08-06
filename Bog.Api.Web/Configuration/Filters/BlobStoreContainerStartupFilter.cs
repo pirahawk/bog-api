@@ -39,11 +39,12 @@ namespace Bog.Api.Web.Configuration.Filters
             using (var serviceScope = builder.ApplicationServices.CreateScope())
             {
                 var blobStore = serviceScope.ServiceProvider.GetService<IBlobStore>();
-                await blobStore.TryCreateContainer(BlobStorageContainer.MARKDOWN_ARTICLE_ENTRIES_CONTAINER);
-                _logger.LogInformation(LogEvenIdsValueObject.BlobStorage, $"Created Container: {BlobStorageValueObjects.MARKDOWN_ARTICLE_ENTRIES_CONTAINER}");
 
-                await blobStore.TryCreateContainer(BlobStorageContainer.TRANSLATED_ARTICLE_ENTRIES_CONTAINER);
-                _logger.LogInformation(LogEvenIdsValueObject.BlobStorage, $"Created Container: {BlobStorageValueObjects.TRANSLATED_ARTICLE_ENTRIES_CONTAINER}");
+                foreach (var blobStorageContainer in BlobStorageLookupValueObjects.BlobNameMap.Keys)
+                {
+                    await blobStore.TryCreateContainer(blobStorageContainer);
+                    _logger.LogInformation(LogEvenIdsValueObject.BlobStorage, $"Created Container: {BlobStorageLookupValueObjects.BlobNameMap[blobStorageContainer]}");
+                }
             }
         }
     }

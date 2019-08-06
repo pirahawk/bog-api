@@ -5,15 +5,15 @@ namespace Bog.Api.Domain.Tests.Coordinators
     public class CreateAndPersistArticleEntryMediaStrategyFixture
     {
         public ICreateEntryMediaCoordinator CreateEntryMediaCoordinator { get; set; }
+        public IUploadArticleEntryMediaCoordinator UploadArticleEntryMediaCoordinator { get; }
 
         public CreateAndPersistArticleEntryMediaStrategyFixture()
         {
-            //CreateEntryMediaCoordinator = new CreateEntryMediaCoordinatorFixture().Build();
         }
 
         public CreateAndPersistArticleEntryMediaStrategy Build()
         {
-            return new CreateAndPersistArticleEntryMediaStrategy(CreateEntryMediaCoordinator);
+            return new CreateAndPersistArticleEntryMediaStrategy(CreateEntryMediaCoordinator, UploadArticleEntryMediaCoordinator);
         }
 
     }

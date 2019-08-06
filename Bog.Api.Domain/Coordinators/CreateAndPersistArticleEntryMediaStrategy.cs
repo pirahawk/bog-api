@@ -7,15 +7,23 @@ namespace Bog.Api.Domain.Coordinators
     public class CreateAndPersistArticleEntryMediaStrategy : ICreateAndPersistArticleEntryMediaStrategy
     {
         private readonly ICreateEntryMediaCoordinator _createEntryMediaCoordinator;
+        private readonly IUploadArticleEntryMediaCoordinator _uploadCoordinator;
 
-        public CreateAndPersistArticleEntryMediaStrategy(ICreateEntryMediaCoordinator createEntryMediaCoordinator)
+        public CreateAndPersistArticleEntryMediaStrategy(ICreateEntryMediaCoordinator createEntryMediaCoordinator, IUploadArticleEntryMediaCoordinator uploadCoordinator)
         {
             _createEntryMediaCoordinator = createEntryMediaCoordinator;
+            _uploadCoordinator = uploadCoordinator;
         }
         public async Task<EntryMedia> PersistArticleEntryMediaAsync(ArticleEntryMediaRequest entryMediaRequest)
         {
-            var articleEntry = await _createEntryMediaCoordinator.CreateArticleEntryMedia(entryMediaRequest);
-            return articleEntry;
+            var articleEntryMedia = await _createEntryMediaCoordinator.CreateArticleEntryMedia(entryMediaRequest);
+
+            if (articleEntryMedia != null)
+            {
+                await _uploadCoordinator.UploadEntryMedia(entryMediaRequest, articleEntryMedia);
+            }
+
+            return articleEntryMedia;
         }
     }
 }
