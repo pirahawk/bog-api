@@ -21,6 +21,7 @@ namespace Bog.Api.Domain.Tests.DbContext
         public IBlogApiDbContext Build()
         {
             _mock.Setup(ctx => ctx.Add(It.IsAny<object>())).Verifiable();
+            _mock.Setup(ctx => ctx.Attach(It.IsAny<object>())).Verifiable();
             _mock.Setup(ctx => ctx.SaveChanges()).Verifiable();
 
             return _mock.Object;

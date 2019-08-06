@@ -16,18 +16,18 @@ namespace Bog.Api.Domain.Coordinators
         {
             _blobstore = blobstore;
         }
-        public async Task UploadArticleEntry(EntryContent entryContent, ArticleEntry articleEntry)
+        public async Task<string> UploadArticleEntry(EntryContent entryContent, ArticleEntry articleEntry)
         {
             if (entryContent == null) throw new ArgumentNullException(nameof(entryContent));
             if (articleEntry == null) throw new ArgumentNullException(nameof(articleEntry));
 
             if (string.IsNullOrWhiteSpace(articleEntry.Content))
             {
-                return;
+                return null;
             }
 
             var contentBase64 = StringUtilities.ToBase64(articleEntry.Content);
-            await _blobstore.PersistArticleEntryAsync(BlobStorageContainer.MARKDOWN_ARTICLE_ENTRIES_CONTAINER, entryContent.ArticleId, entryContent.Id, contentBase64);
+            return await _blobstore.PersistArticleEntryAsync(BlobStorageContainer.MARKDOWN_ARTICLE_ENTRIES_CONTAINER, entryContent.ArticleId, entryContent.Id, contentBase64);
         }
     }
 }

@@ -10,5 +10,7 @@ namespace Bog.Api.Domain.Data
         public Article Article { get; set; }
         public DateTimeOffset Created { get; set; }
         public IEnumerable<EntryMedia> EntryMedia { get; set; }
+        public DateTimeOffset? Persisted { get; set; }
+        public string BlobUrl { get; set; }
     }
 }

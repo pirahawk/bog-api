@@ -60,6 +60,11 @@ namespace Bog.Api.Db.DbContexts
             }
 
             return queryable;
-        } 
+        }
+
+        public void Attach<TEntity>(TEntity entity) where TEntity : class
+        {
+            _context.Attach(entity);
+        }
     }
 }

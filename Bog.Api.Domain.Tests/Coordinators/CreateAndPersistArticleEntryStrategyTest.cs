@@ -41,11 +41,17 @@ namespace Bog.Api.Domain.Tests.Coordinators
             var entry = new ArticleEntry();
             var createMock = new Mock<ICreateArticleEntryCoordinator>();
             var uploadMock = new Mock<IUploadArticleEntryCoordinator>();
+            var uploadUrl = "someUrl";
 
             createMock.Setup(c => c.CreateArticleEntry(It.IsAny<Guid>(), It.IsAny<ArticleEntry>()))
-                .ReturnsAsync(() => entryContent);
+                .ReturnsAsync(entryContent);
 
-            uploadMock.Setup(u => u.UploadArticleEntry(entryContent, It.IsAny<ArticleEntry>())).Verifiable();
+            createMock.Setup(c => c.MarkUploadedSuccess(It.IsAny<EntryContent>(), It.IsAny<string>()))
+                .ReturnsAsync(entryContent);
+
+            uploadMock.Setup(u => u.UploadArticleEntry(entryContent, It.IsAny<ArticleEntry>()))
+                .ReturnsAsync(uploadUrl)
+                .Verifiable();
 
             var persistArticleEntryStrategy = new CreateAndPersistArticleEntryStrategyFixture
             {
@@ -56,6 +62,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
             var result = await persistArticleEntryStrategy.PersistArticleEntryAsync(Guid.NewGuid(), new ArticleEntry());
 
             uploadMock.VerifyAll();
+            createMock.Verify(c=>c.MarkUploadedSuccess(entryContent, uploadUrl));
             Assert.Equal(entryContent, result);
         }
     }

@@ -5,6 +5,7 @@ using Bog.Api.Domain.Tests.DbContext;
 using Moq;
 using System;
 using System.Threading.Tasks;
+using Bog.Api.Common;
 using Bog.Api.Domain.Models.Http;
 using Xunit;
 
@@ -57,6 +58,29 @@ namespace Bog.Api.Domain.Tests.Coordinators
             dbContextFixture.Mock.Verify(ctx => ctx.Find<Article>(article.Id));
             dbContextFixture.Mock.Verify(ctx => ctx.Add(result));
             dbContextFixture.Mock.Verify(ctx => ctx.SaveChanges());
+        }
+
+        [Fact]
+        public async Task UpdatesAndPersistsEntryContentOnUpload()
+        {
+            var entryContent = new EntryContentFixture().Build();
+            var blobUrl = "http://somewhere";
+            var blobUrlBase64 = StringUtilities.ToBase64(blobUrl);
+            var mockClock = new MockClock();
+            var dbContextFixture = new MockBlogApiDbContextFixture();
+            var createArticleEntryCoordinator = new CreateArticleEntryCoordinatorFixture
+            {
+                Context = dbContextFixture.Build(),
+                Clock = mockClock
+            }.Build();
+
+            var resultEntryContent = await createArticleEntryCoordinator.MarkUploadedSuccess(entryContent, blobUrl);
+
+            Assert.Equal(blobUrlBase64, resultEntryContent.BlobUrl);
+
+            dbContextFixture.Mock.Verify(ctx => ctx.Attach(entryContent));
+            dbContextFixture.Mock.Verify(ctx => ctx.SaveChanges());
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Bog.Api.Common;
 using Bog.Api.Common.Time;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.DbContext;
@@ -30,6 +31,21 @@ namespace Bog.Api.Domain.Coordinators
             }
 
             return await CreateNewEntryFor(article, entry);
+        }
+
+        public async Task<EntryContent> MarkUploadedSuccess(EntryContent entryContent, string uploadUrl)
+        {
+            if (entryContent == null) throw new ArgumentNullException(nameof(entryContent));
+            if (string.IsNullOrWhiteSpace(uploadUrl)) throw new ArgumentNullException(nameof(uploadUrl));
+
+            _context.Attach(entryContent);
+
+            entryContent.Persisted = _clock.Now;
+            entryContent.BlobUrl = StringUtilities.ToBase64(uploadUrl);
+
+            await _context.SaveChanges();
+
+            return entryContent;
         }
 
         private async Task<EntryContent> CreateNewEntryFor(Article article, ArticleEntry entry)

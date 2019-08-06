@@ -12,5 +12,7 @@ namespace Bog.Api.Domain.Data
         public Guid BlobFileName { get; set; }
         public DateTimeOffset Created { get; set; }
         public string MD5Base64Hash { get; set; }
+        public DateTimeOffset? Persisted { get; set; }
+        public string BlobUrl { get; set; }
     }
 }

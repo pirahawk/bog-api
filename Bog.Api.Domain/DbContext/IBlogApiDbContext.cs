@@ -10,5 +10,6 @@ namespace Bog.Api.Domain.DbContext
         Task<TEntity> Find<TEntity>(params object[] keyValues) where TEntity : class;
         void Delete<TEntity>(params TEntity[] entities) where TEntity : class;
         IQueryable<TEntity> Query<TEntity>(params string[] includes) where TEntity : class;
+        void Attach<TEntity>(TEntity entity) where TEntity : class;
     }
 }

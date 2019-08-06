@@ -21,7 +21,14 @@ namespace Bog.Api.Domain.Coordinators
 
             if (result != null)
             {
-                await _uploadCoordinator.UploadArticleEntry(result, entry);
+                string uploadUrl = await _uploadCoordinator.UploadArticleEntry(result, entry);
+
+                if (string.IsNullOrWhiteSpace(uploadUrl))
+                {
+                    return result;
+                }
+
+                return await _createEntryCoordinator.MarkUploadedSuccess(result, uploadUrl);
             }
 
             return result;
