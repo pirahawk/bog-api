@@ -29,8 +29,16 @@ namespace Bog.Api.Domain.Tests.DbContext
         public MockBlogApiDbContextFixture With<TEntity>(TEntity entity, params object[] keys) where TEntity : class
         {
             _mock.Setup(ctx => ctx.Find<TEntity>(keys))
-                .Returns(async () => await Task.FromResult(entity))
+                .ReturnsAsync(entity)
                 .Verifiable();
+
+            return this;
+        }
+
+        public MockBlogApiDbContextFixture With<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+        {
+            _mock.Setup(ctx => ctx.Query<TEntity>(It.IsAny<string[]>()))
+                .Returns(entities.AsQueryable);
 
             return this;
         }

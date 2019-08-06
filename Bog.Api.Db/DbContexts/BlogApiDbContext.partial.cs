@@ -11,15 +11,6 @@ namespace Bog.Api.Db.DbContexts
 
         public IQueryable<TEntity> Get<TEntity>() where TEntity : class
         {
-            if (MappedTypesLookup == null)
-            {
-                InitializeMappedTypesLookup();
-            }
-
-            if (!MappedTypesLookup.ContainsKey(typeof(TEntity)))
-            {
-                throw new ArgumentException($"There is no mapped entity of type: {typeof(TEntity)} in the DBContext");
-            }
 
             return Set<TEntity>().AsQueryable();
         }

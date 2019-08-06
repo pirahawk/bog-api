@@ -1,8 +1,10 @@
 ﻿using Bog.Api.Domain.DbContext;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bog.Api.Db.DbContexts
 {
@@ -44,5 +46,20 @@ namespace Bog.Api.Db.DbContexts
         {
             _context.RemoveRange(entities);
         }
+
+        public IQueryable<TEntity> Query<TEntity>(params string[] includes) where TEntity : class
+        {
+            var queryable = _context.Get<TEntity>();
+
+            if (queryable != null && includes?.Length > 0)
+            {
+                foreach (var include in includes)
+                {
+                    queryable = queryable.Include(include);
+                }
+            }
+
+            return queryable;
+        } 
     }
 }
