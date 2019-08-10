@@ -74,7 +74,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
                 Clock = mockClock
             }.Build();
 
-            var resultEntryContent = await createArticleEntryCoordinator.MarkUploadedSuccess(entryContent, blobUrl);
+            var resultEntryContent = await createArticleEntryCoordinator.MarkUploadSuccess(entryContent, blobUrl);
 
             Assert.Equal(blobUrlBase64, resultEntryContent.BlobUrl);
 

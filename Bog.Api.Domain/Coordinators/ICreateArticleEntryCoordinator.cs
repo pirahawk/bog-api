@@ -8,6 +8,6 @@ namespace Bog.Api.Domain.Coordinators
     public interface ICreateArticleEntryCoordinator
     {
         Task<EntryContent> CreateArticleEntry(Guid articleId, ArticleEntry entry);
-        Task<EntryContent> MarkUploadedSuccess(EntryContent entryContent, string uploadUrl);
+        Task<EntryContent> MarkUploadSuccess(EntryContent entryContent, string uploadUrl);
     }
 }

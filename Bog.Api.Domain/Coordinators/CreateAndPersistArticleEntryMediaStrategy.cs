@@ -14,13 +14,21 @@ namespace Bog.Api.Domain.Coordinators
             _createEntryMediaCoordinator = createEntryMediaCoordinator;
             _uploadCoordinator = uploadCoordinator;
         }
+
         public async Task<EntryMedia> PersistArticleEntryMediaAsync(ArticleEntryMediaRequest entryMediaRequest)
         {
             var articleEntryMedia = await _createEntryMediaCoordinator.CreateArticleEntryMedia(entryMediaRequest);
 
             if (articleEntryMedia != null)
             {
-                await _uploadCoordinator.UploadEntryMedia(entryMediaRequest, articleEntryMedia);
+                var uploadUri = await _uploadCoordinator.UploadEntryMedia(entryMediaRequest, articleEntryMedia);
+
+                if (string.IsNullOrWhiteSpace(uploadUri))
+                {
+                    return articleEntryMedia;
+                }
+
+                return await _createEntryMediaCoordinator.MarkUploadedSuccess(articleEntryMedia, uploadUri);
             }
 
             return articleEntryMedia;

@@ -33,7 +33,7 @@ namespace Bog.Api.Domain.Coordinators
             return await CreateNewEntryFor(article, entry);
         }
 
-        public async Task<EntryContent> MarkUploadedSuccess(EntryContent entryContent, string uploadUrl)
+        public async Task<EntryContent> MarkUploadSuccess(EntryContent entryContent, string uploadUrl)
         {
             if (entryContent == null) throw new ArgumentNullException(nameof(entryContent));
             if (string.IsNullOrWhiteSpace(uploadUrl)) throw new ArgumentNullException(nameof(uploadUrl));

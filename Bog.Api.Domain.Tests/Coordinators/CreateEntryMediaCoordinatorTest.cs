@@ -72,5 +72,29 @@ namespace Bog.Api.Domain.Tests.Coordinators
             dbContextFixture.Mock.Verify(ctx => ctx.Add(result));
             dbContextFixture.Mock.Verify(ctx => ctx.SaveChanges());
         }
+
+        [Fact]
+        public async Task MarksEntryMediaAsPersistedWhenSuccessful()
+        {
+            var expectedUriUpload = "http://test.com";
+            var entryMedia = new EntryMediaFixtrue().Build();
+            var mockClock = new MockClock();
+            var dbContextFixture = new MockBlogApiDbContextFixture();
+            var dbMock = dbContextFixture.Mock;
+            dbMock.Setup(ctx => ctx.Attach(entryMedia));
+
+            var coordinator = new CreateEntryMediaCoordinatorFixture
+            {
+                Context = dbContextFixture.Build(),
+                Clock = mockClock
+            }.Build();
+
+            var result = await coordinator.MarkUploadedSuccess(entryMedia, expectedUriUpload);
+
+            Assert.Equal( expectedUriUpload, result.BlobUrl);
+            Assert.Equal(mockClock.Now, result.Persisted);
+            dbMock.Verify(ctx => ctx.Attach(entryMedia));
+            dbMock.Verify(ctx => ctx.SaveChanges());
+        }
     }
 }

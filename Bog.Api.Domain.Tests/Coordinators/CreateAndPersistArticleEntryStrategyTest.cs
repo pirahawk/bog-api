@@ -12,13 +12,14 @@ namespace Bog.Api.Domain.Tests.Coordinators
     public class CreateAndPersistArticleEntryStrategyTest
     {
         [Fact]
-        public async Task DoesNotAttemptToPeristToBlobStoreIfCannotCreateArticleEntry()
+        public async Task DoesNotAttemptToPersistToBlobStoreIfCannotCreateArticleEntry()
         {
             var createMock = new Mock<ICreateArticleEntryCoordinator>();
             var uploadMock = new Mock<IUploadArticleEntryCoordinator>();
 
             createMock.Setup(c => c.CreateArticleEntry(It.IsAny<Guid>(), It.IsAny<ArticleEntry>()))
                 .ReturnsAsync(() => null);
+            createMock.Setup(c => c.MarkUploadSuccess(It.IsAny<EntryContent>(), It.IsAny<string>()));
 
             uploadMock.Setup(u => u.UploadArticleEntry(It.IsAny<EntryContent>(), It.IsAny<ArticleEntry>())).Verifiable();
 
@@ -31,6 +32,8 @@ namespace Bog.Api.Domain.Tests.Coordinators
             var result = await persistArticleEntryStrategy.PersistArticleEntryAsync(Guid.NewGuid(), new ArticleEntry());
 
             uploadMock.Verify(u => u.UploadArticleEntry(It.IsAny<EntryContent>(), It.IsAny<ArticleEntry>()), Times.Never);
+            createMock.Verify(c => c.MarkUploadSuccess(It.IsAny<EntryContent>(), It.IsAny<string>()), Times.Never);
+
             Assert.Null(result);
         }
 
@@ -46,7 +49,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
             createMock.Setup(c => c.CreateArticleEntry(It.IsAny<Guid>(), It.IsAny<ArticleEntry>()))
                 .ReturnsAsync(entryContent);
 
-            createMock.Setup(c => c.MarkUploadedSuccess(It.IsAny<EntryContent>(), It.IsAny<string>()))
+            createMock.Setup(c => c.MarkUploadSuccess(It.IsAny<EntryContent>(), It.IsAny<string>()))
                 .ReturnsAsync(entryContent);
 
             uploadMock.Setup(u => u.UploadArticleEntry(entryContent, It.IsAny<ArticleEntry>()))
@@ -62,7 +65,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
             var result = await persistArticleEntryStrategy.PersistArticleEntryAsync(Guid.NewGuid(), new ArticleEntry());
 
             uploadMock.VerifyAll();
-            createMock.Verify(c=>c.MarkUploadedSuccess(entryContent, uploadUrl));
+            createMock.Verify(c=>c.MarkUploadSuccess(entryContent, uploadUrl));
             Assert.Equal(entryContent, result);
         }
     }

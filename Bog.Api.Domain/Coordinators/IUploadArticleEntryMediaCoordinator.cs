@@ -6,6 +6,6 @@ namespace Bog.Api.Domain.Coordinators
 {
     public interface IUploadArticleEntryMediaCoordinator
     {
-        Task UploadEntryMedia(ArticleEntryMediaRequest entryMediaRequest, EntryMedia articleEntryMedia);
+        Task<string> UploadEntryMedia(ArticleEntryMediaRequest entryMediaRequest, EntryMedia articleEntryMedia);
     }
 }

@@ -15,6 +15,7 @@ namespace Bog.Api.Domain.Coordinators
             _createEntryCoordinator = createEntryCoordinator;
             _uploadCoordinator = uploadCoordinator;
         }
+
         public async Task<EntryContent> PersistArticleEntryAsync(Guid articleId, ArticleEntry entry)
         {
             var result = await _createEntryCoordinator.CreateArticleEntry(articleId, entry);
@@ -28,7 +29,7 @@ namespace Bog.Api.Domain.Coordinators
                     return result;
                 }
 
-                return await _createEntryCoordinator.MarkUploadedSuccess(result, uploadUrl);
+                return await _createEntryCoordinator.MarkUploadSuccess(result, uploadUrl);
             }
 
             return result;

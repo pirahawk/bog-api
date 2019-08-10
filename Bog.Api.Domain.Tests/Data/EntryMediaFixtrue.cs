@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net.Mime;
+using Bog.Api.Common.Tests.Time;
 using Bog.Api.Domain.Data;
 
 namespace Bog.Api.Domain.Tests.Data
@@ -15,6 +17,16 @@ namespace Bog.Api.Domain.Tests.Data
 
         public Guid Id { get; set; }
 
+        public string MD5Base64Hash { get; set; }
+
+        public DateTimeOffset? Persisted { get; set; }
+
+        public string BlobUrl { get; set; }
+
+        public DateTimeOffset Created { get; set; }
+
+        public string ContentType { get; set; }
+
         public EntryMediaFixtrue()
         {
             Id = Guid.NewGuid();
@@ -24,6 +36,11 @@ namespace Bog.Api.Domain.Tests.Data
             var entryContent = new EntryContentFixture().Build();
             EntryContentId = entryContent.Id;
             EntryContent = entryContent;
+            MD5Base64Hash = "someHash";
+            Persisted = new MockClock().Now;
+            BlobUrl = "someUrl";
+            Created = new MockClock().Now;
+            ContentType = "someContentType";
         }
 
         public EntryMedia Build()
@@ -34,8 +51,15 @@ namespace Bog.Api.Domain.Tests.Data
                 FileName = FileName,
                 EntryContentId = EntryContentId,
                 EntryContent = EntryContent,
-                BlobFileName = BlobFileName
+                BlobFileName = BlobFileName,
+                ContentType = ContentType,
+                Created = Created,
+                BlobUrl = BlobUrl,
+                Persisted = Persisted,
+                MD5Base64Hash = MD5Base64Hash,
             };
         }
+
+        
     }
 }
