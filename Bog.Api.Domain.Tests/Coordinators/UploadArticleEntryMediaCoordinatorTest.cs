@@ -11,7 +11,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
         [Fact]
         public async Task CallsDownToBlobStoreToPersistMedia()
         {
-            var entryMedia = new EntryMediaFixtrue().Build();
+            var entryMedia = new EntryMediaFixture().Build();
             var entryMediaRequest = new ArticleEntryMediaRequest
             {
                 MediaContent = new byte[1]

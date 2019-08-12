@@ -77,7 +77,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
         public async Task MarksEntryMediaAsPersistedWhenSuccessful()
         {
             var expectedUriUpload = "http://test.com";
-            var entryMedia = new EntryMediaFixtrue().Build();
+            var entryMedia = new EntryMediaFixture().Build();
             var mockClock = new MockClock();
             var dbContextFixture = new MockBlogApiDbContextFixture();
             var dbMock = dbContextFixture.Mock;

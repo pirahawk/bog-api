@@ -5,7 +5,7 @@ using Bog.Api.Domain.Data;
 
 namespace Bog.Api.Domain.Tests.Data
 {
-    public class EntryMediaFixtrue
+    public class EntryMediaFixture
     {
         public EntryContent EntryContent { get; set; }
 
@@ -27,7 +27,7 @@ namespace Bog.Api.Domain.Tests.Data
 
         public string ContentType { get; set; }
 
-        public EntryMediaFixtrue()
+        public EntryMediaFixture()
         {
             Id = Guid.NewGuid();
             FileName = "foo.txt";

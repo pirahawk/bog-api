@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Bog.Api.Domain.Data;
-using Bog.Api.Domain.DbContext;
+﻿using Bog.Api.Domain.DbContext;
 using Moq;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Bog.Api.Domain.Tests.DbContext
 {
@@ -36,7 +34,7 @@ namespace Bog.Api.Domain.Tests.DbContext
             return this;
         }
 
-        public MockBlogApiDbContextFixture With<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+        public MockBlogApiDbContextFixture WithQuery<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
         {
             _mock.Setup(ctx => ctx.Query<TEntity>(It.IsAny<string[]>()))
                 .Returns(entities.AsQueryable);

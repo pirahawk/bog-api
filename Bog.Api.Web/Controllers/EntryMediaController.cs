@@ -1,10 +1,9 @@
-﻿using Bog.Api.Domain.Models.Http;
+﻿using Bog.Api.Domain.Coordinators;
+using Bog.Api.Domain.Models.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Net;
-using System.Threading.Tasks;
-using Bog.Api.Domain.Coordinators;
 using Microsoft.Net.Http.Headers;
+using System;
+using System.Threading.Tasks;
 
 namespace Bog.Api.Web.Controllers
 {
@@ -12,10 +11,12 @@ namespace Bog.Api.Web.Controllers
     public class EntryMediaController : Controller
     {
         private readonly ICreateAndPersistArticleEntryMediaStrategy _createStrategy;
+        private readonly IEntryMediaSearchStrategy _mediaSearchStrategy;
 
-        public EntryMediaController(ICreateAndPersistArticleEntryMediaStrategy createStrategy)
+        public EntryMediaController(ICreateAndPersistArticleEntryMediaStrategy createStrategy, IEntryMediaSearchStrategy mediaSearchStrategy)
         {
             _createStrategy = createStrategy;
+            _mediaSearchStrategy = mediaSearchStrategy;
         }
 
         [Route("{entryId:guid}")]
@@ -44,5 +45,22 @@ namespace Bog.Api.Web.Controllers
             return Ok();
         }
 
+        [HttpHead]
+        public async Task<IActionResult> FindEntryMedia([FromHeader(Name = HeaderNames.IfMatch)] string ifMatch)
+        {
+            if (string.IsNullOrWhiteSpace(ifMatch))
+            {
+                return NotFound();
+            }
+
+            var result = await _mediaSearchStrategy.Find(ifMatch);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
     }
 }

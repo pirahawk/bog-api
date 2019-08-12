@@ -37,7 +37,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
         [Fact]
         public async void InvokesPersistToBlobStoreWhenSuccessfullyCreated()
         {
-            var entryMedia = new EntryMediaFixtrue().Build();
+            var entryMedia = new EntryMediaFixture().Build();
             var mockBlobUrl = "someUrl";
             var mockCoordinator = new Mock<ICreateEntryMediaCoordinator>();
             mockCoordinator.Setup(cc => cc.CreateArticleEntryMedia(It.IsAny<ArticleEntryMediaRequest>())).ReturnsAsync(() => entryMedia);
