@@ -45,15 +45,16 @@ namespace Bog.Api.Web.Controllers
             return Ok();
         }
 
+        [Route("{entryId:guid}")]
         [HttpHead]
-        public async Task<IActionResult> FindEntryMedia([FromHeader(Name = HeaderNames.IfMatch)] string ifMatch)
+        public async Task<IActionResult> FindEntryMedia(Guid entryId, [FromHeader(Name = HeaderNames.IfMatch)] string ifMatch)
         {
             if (string.IsNullOrWhiteSpace(ifMatch))
             {
                 return NotFound();
             }
 
-            var result = await _mediaSearchStrategy.Find(ifMatch);
+            var result = await _mediaSearchStrategy.Find(entryId, ifMatch);
 
             if (result == null)
             {

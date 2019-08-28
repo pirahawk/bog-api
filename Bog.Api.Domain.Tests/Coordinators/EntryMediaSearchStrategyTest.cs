@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.Tests.Data;
@@ -13,20 +14,31 @@ namespace Bog.Api.Domain.Tests.Coordinators
         {
             get
             {
+                var entryContent = new EntryContentFixture().Build();
+                var expectedMediaHashToFind = "hash2";
                 var entryMedia1 = new EntryMediaFixture { MD5Base64Hash = "hash1" }.Build();
-                var entryMedia2 = new EntryMediaFixture { MD5Base64Hash = "hash2" }.Build();
-                var allMedia = new[] { entryMedia1, entryMedia2 };
+                var entryMedia2 = new EntryMediaFixture { EntryContentId = entryContent.Id, MD5Base64Hash = expectedMediaHashToFind }.Build();
+                var entryMedia3 = new EntryMediaFixture { MD5Base64Hash = expectedMediaHashToFind }.Build();
 
                 yield return new object[]
                 {
-                    allMedia,
+                    new[] { entryMedia1, entryMedia2, entryMedia3 },
+                    entryContent.Id,
                     "someHashThatDoesNotExistst",
                 };
 
                 yield return new object[]
                 {
-                    allMedia,
-                    entryMedia2.MD5Base64Hash,
+                    new[] { entryMedia1, entryMedia3 },
+                    entryContent.Id,
+                    expectedMediaHashToFind,
+                };
+
+                yield return new object[]
+                {
+                    new[] { entryMedia1, entryMedia2, entryMedia3 },
+                    entryContent.Id,
+                    expectedMediaHashToFind,
                     entryMedia2
                 };
             }
@@ -34,7 +46,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
         [Theory]
         [MemberData(nameof(FindTestCases))]
-        public async Task FindsMediaEntryIfExists(EntryMedia[] existingMedia, string testMD5HashToFind, EntryMedia expected = null)
+        public async Task FindsMediaEntryIfExists(EntryMedia[] existingMedia, Guid entryContentId, string testMd5HashToFind, EntryMedia expected = null)
         {
             var contextFixture = new MockBlogApiDbContextFixture();
             contextFixture.WithQuery(existingMedia);
@@ -45,7 +57,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
                 Context = context
             }.Build();
 
-            var result = await entryMediaSearchStrategy.Find(testMD5HashToFind);
+            var result = await entryMediaSearchStrategy.Find(entryContentId, testMd5HashToFind);
 
             contextFixture.Mock.Verify(ctx => ctx.Query<EntryMedia>());
 
