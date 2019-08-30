@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Bog.Api.Domain.Data;
 
 namespace Bog.Api.Domain.Tests.Data
@@ -24,6 +26,8 @@ namespace Bog.Api.Domain.Tests.Data
 
         public DateTimeOffset? Deleted { get; set; }
 
+        public List<EntryContent> ArticleEntries { get; set; }
+
         public ArticleFixture()
         {
             var blogFixture = new BlogFixture();
@@ -35,11 +39,12 @@ namespace Bog.Api.Domain.Tests.Data
             IsPublished = false;
             Created = DateTimeOffset.UtcNow;
             IsDeleted = false;
+            ArticleEntries = Enumerable.Empty<EntryContent>().ToList();
         }
 
         public Article Build()
         {
-            return new Article
+            var article = new Article
             {
                 Id = Id,
                 Author = Author,
@@ -49,8 +54,24 @@ namespace Bog.Api.Domain.Tests.Data
                 Updated = Updated,
                 Deleted = Deleted,
                 IsDeleted = IsDeleted,
-                IsPublished = IsPublished
+                IsPublished = IsPublished,
+                ArticleEntries = ArticleEntries
             };
+
+            foreach (var articleEntry in ArticleEntries)
+            {
+                articleEntry.ArticleId = article.Id;
+                articleEntry.Article = article;
+            }
+
+            return article;
+        }
+
+        public ArticleFixture WithEntry(params EntryContent[] entries)
+        {
+            ArticleEntries = ArticleEntries ?? Enumerable.Empty<EntryContent>().ToList();
+            ArticleEntries.AddRange(entries);
+            return this;
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Bog.Api.Common.Tests.Time;
 using Bog.Api.Domain.Data;
 
@@ -14,23 +16,43 @@ namespace Bog.Api.Domain.Tests.Data
 
         public Guid Id { get; set; }
 
+        public List<EntryMedia> EntryMedia { get; set; }
+
         public EntryContentFixture()
         {
             Id = Guid.NewGuid();
             Article = new ArticleFixture().Build();
             ArticleId = Article.Id;
             Created = new MockClock().Now;
+            EntryMedia = Enumerable.Empty<EntryMedia>().ToList();
         }
 
         public EntryContent Build()
         {
-            return new EntryContent
+            var entryContent = new EntryContent
             {
                 Id = Id,
                 ArticleId = ArticleId,
                 Article = Article,
-                Created = Created
+                Created = Created,
+                EntryMedia = EntryMedia
             };
+
+            foreach (var entryMedia in EntryMedia)
+            {
+                entryMedia.EntryContentId = entryContent.Id;
+                entryMedia.EntryContent = entryContent;
+            }
+
+            return entryContent;
+        }
+
+        public EntryContentFixture WithMedia(params EntryMedia[] entryMedia)
+        {
+            EntryMedia = EntryMedia ?? Enumerable.Empty<EntryMedia>().ToList();
+            EntryMedia.AddRange(entryMedia);
+
+            return this;
         }
     }
 }

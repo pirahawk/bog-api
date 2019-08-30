@@ -18,11 +18,18 @@ namespace Bog.Api.Domain.Tests.Data
 
         public Blog Build()
         {
-            return new Blog
+            var blog = new Blog
             {
                 Id   = Id,
                 Articles = Articles
             };
+
+            foreach (var article in Articles)
+            {
+                article.BlogId = blog.Id;
+                article.Blog = blog;
+            }
+            return blog;
         }
     }
 }

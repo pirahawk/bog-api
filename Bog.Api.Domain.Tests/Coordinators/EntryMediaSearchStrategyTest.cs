@@ -14,30 +14,36 @@ namespace Bog.Api.Domain.Tests.Coordinators
         {
             get
             {
-                var entryContent = new EntryContentFixture().Build();
                 var expectedMediaHashToFind = "hash2";
                 var entryMedia1 = new EntryMediaFixture { MD5Base64Hash = "hash1" }.Build();
-                var entryMedia2 = new EntryMediaFixture { EntryContentId = entryContent.Id, MD5Base64Hash = expectedMediaHashToFind }.Build();
+                var entryMedia2 = new EntryMediaFixture { MD5Base64Hash = expectedMediaHashToFind }.Build();
                 var entryMedia3 = new EntryMediaFixture { MD5Base64Hash = expectedMediaHashToFind }.Build();
+
+                var entryContent1 = new EntryContentFixture().WithMedia(entryMedia1, entryMedia2).Build();
+                var entryContent2 = new EntryContentFixture().WithMedia(entryMedia3).Build();
+
+                var article1 = new ArticleFixture().WithEntry(entryContent1).Build();
+                var article2 = new ArticleFixture().WithEntry(entryContent2).Build();
+
 
                 yield return new object[]
                 {
-                    new[] { entryMedia1, entryMedia2, entryMedia3 },
-                    entryContent.Id,
+                    new[] { article1, article2},
+                    entryContent1.Id,
                     "someHashThatDoesNotExistst",
                 };
 
                 yield return new object[]
                 {
-                    new[] { entryMedia1, entryMedia3 },
-                    entryContent.Id,
+                    new[] { article2},
+                    entryContent1.Id,
                     expectedMediaHashToFind,
                 };
 
                 yield return new object[]
                 {
-                    new[] { entryMedia1, entryMedia2, entryMedia3 },
-                    entryContent.Id,
+                    new[] { article1, article2},
+                    entryContent1.Id,
                     expectedMediaHashToFind,
                     entryMedia2
                 };
@@ -46,10 +52,10 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
         [Theory]
         [MemberData(nameof(FindTestCases))]
-        public async Task FindsMediaEntryIfExists(EntryMedia[] existingMedia, Guid entryContentId, string testMd5HashToFind, EntryMedia expected = null)
+        public async Task FindsMediaEntryIfExists(Article[] allArticles, Guid entryContentId, string testMd5HashToFind, EntryMedia expected = null)
         {
             var contextFixture = new MockBlogApiDbContextFixture();
-            contextFixture.WithQuery(existingMedia);
+            contextFixture.WithQuery(allArticles);
 
             var context = contextFixture.Build();
             var entryMediaSearchStrategy = new EntryMediaSearchStrategyFixture
@@ -59,7 +65,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
             var result = await entryMediaSearchStrategy.Find(entryContentId, testMd5HashToFind);
 
-            contextFixture.Mock.Verify(ctx => ctx.Query<EntryMedia>());
+            contextFixture.Mock.Verify(ctx => ctx.Query<Article>());
 
             if (expected == null)
             {
