@@ -38,10 +38,18 @@ namespace Bog.Api.Domain.Tests.Coordinators
         public async void InvokesPersistToBlobStoreWhenSuccessfullyCreated()
         {
             var entryMedia = new EntryMediaFixture().Build();
+            var articleEntryMediaRequest = new ArticleEntryMediaRequest
+            {
+                MD5Base64Hash = "ahash",
+                EntryId = entryMedia.EntryContentId
+            };
             var mockBlobUrl = "someUrl";
             var mockCoordinator = new Mock<ICreateEntryMediaCoordinator>();
             mockCoordinator.Setup(cc => cc.CreateArticleEntryMedia(It.IsAny<ArticleEntryMediaRequest>())).ReturnsAsync(() => entryMedia);
             mockCoordinator.Setup(cc => cc.MarkUploadedSuccess(It.IsAny<EntryMedia>(), It.IsAny<string>())).ReturnsAsync(entryMedia);
+
+            var mockSearch = new Mock<IEntryMediaSearchStrategy>();
+            mockSearch.Setup(ms => ms.Find(entryMedia.EntryContentId, articleEntryMediaRequest.MD5Base64Hash)).ReturnsAsync(() => null);
 
             var mockBlob = new Mock<IUploadArticleEntryMediaCoordinator>(); ;
             mockBlob.Setup(blob => blob.UploadEntryMedia(It.IsAny<ArticleEntryMediaRequest>(), It.IsAny<EntryMedia>())).ReturnsAsync(mockBlobUrl);
@@ -49,16 +57,62 @@ namespace Bog.Api.Domain.Tests.Coordinators
             var strategy = new CreateAndPersistArticleEntryMediaStrategyFixture
             {
                 CreateEntryMediaCoordinator = mockCoordinator.Object,
-                UploadArticleEntryMediaCoordinator = mockBlob.Object
+                UploadArticleEntryMediaCoordinator = mockBlob.Object,
+                SearchStrategy = mockSearch.Object
 
             }.Build();
 
-            var articleEntryMediaRequest = new ArticleEntryMediaRequest();
+            
             var result = await strategy.PersistArticleEntryMediaAsync(articleEntryMediaRequest);
 
             Assert.Equal(entryMedia, result);
             mockBlob.Verify(blob => blob.UploadEntryMedia(articleEntryMediaRequest, entryMedia));
+            mockSearch.Verify(ms => ms.Find(entryMedia.EntryContentId, articleEntryMediaRequest.MD5Base64Hash));
             mockCoordinator.Verify(cc => cc.MarkUploadedSuccess(entryMedia, mockBlobUrl));
+        }
+
+
+        [Fact]
+        public async void DoesNotAttemptPersistToBlobStoreWhenEntrymediaWithSameHashExists()
+        {
+            var entryMedia = new EntryMediaFixture().Build();
+            var existingEntryMediaWithSameHash = new EntryMediaFixture
+            {
+                MD5Base64Hash = entryMedia.MD5Base64Hash,
+                BlobUrl = "existingBlobUrl"
+            }.Build();
+
+            var articleEntryMediaRequest = new ArticleEntryMediaRequest
+            {
+                MD5Base64Hash = "ahash",
+                EntryId = entryMedia.EntryContentId
+            };
+            var mockCoordinator = new Mock<ICreateEntryMediaCoordinator>();
+            mockCoordinator.Setup(cc => cc.CreateArticleEntryMedia(It.IsAny<ArticleEntryMediaRequest>())).ReturnsAsync(() => entryMedia);
+            mockCoordinator.Setup(cc => cc.MarkUploadedSuccess(It.IsAny<EntryMedia>(), It.IsAny<string>())).ReturnsAsync(entryMedia);
+
+            var mockSearch = new Mock<IEntryMediaSearchStrategy>();
+            mockSearch.Setup(ms => ms.Find(entryMedia.EntryContentId, articleEntryMediaRequest.MD5Base64Hash)).ReturnsAsync(() => existingEntryMediaWithSameHash);
+
+            var mockBlob = new Mock<IUploadArticleEntryMediaCoordinator>(); ;
+            mockBlob.Setup(blob => blob.UploadEntryMedia(It.IsAny<ArticleEntryMediaRequest>(), It.IsAny<EntryMedia>()));
+
+            var strategy = new CreateAndPersistArticleEntryMediaStrategyFixture
+            {
+                CreateEntryMediaCoordinator = mockCoordinator.Object,
+                UploadArticleEntryMediaCoordinator = mockBlob.Object,
+                SearchStrategy = mockSearch.Object
+
+            }.Build();
+
+
+            var result = await strategy.PersistArticleEntryMediaAsync(articleEntryMediaRequest);
+
+            Assert.Equal(entryMedia, result);
+            mockSearch.Verify(ms => ms.Find(entryMedia.EntryContentId, articleEntryMediaRequest.MD5Base64Hash));
+
+            mockBlob.Verify(blob => blob.UploadEntryMedia(articleEntryMediaRequest, entryMedia), Times.Never());
+            mockCoordinator.Verify(cc => cc.MarkUploadedSuccess(entryMedia, existingEntryMediaWithSameHash.BlobUrl));
         }
     }
 }

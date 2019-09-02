@@ -53,11 +53,7 @@ namespace Bog.Api.Web.Controllers
             {
                 return NotFound();
             }
-
-
-            // This is wrong. You need the: entryId, media hash & the name of the media item
-            // in the search strat, you need to check if a media entry with the same name and has exist for the entry's "Article", not just the entry itself
-
+            
             var result = await _mediaSearchStrategy.Find(entryId, ifMatch);
 
             if (result == null)
