@@ -18,6 +18,10 @@ namespace Bog.Api.Domain.Tests.Data
 
         public List<EntryMedia> EntryMedia { get; set; }
 
+        public string BlobUrl { get; set; }
+
+        public DateTimeOffset? Persisted { get; set; }
+
         public EntryContentFixture()
         {
             Id = Guid.NewGuid();
@@ -25,6 +29,8 @@ namespace Bog.Api.Domain.Tests.Data
             ArticleId = Article.Id;
             Created = new MockClock().Now;
             EntryMedia = Enumerable.Empty<EntryMedia>().ToList();
+            BlobUrl = "someUrl";
+            Persisted = new MockClock().Now;
         }
 
         public EntryContent Build()
@@ -35,7 +41,9 @@ namespace Bog.Api.Domain.Tests.Data
                 ArticleId = ArticleId,
                 Article = Article,
                 Created = Created,
-                EntryMedia = EntryMedia
+                EntryMedia = EntryMedia,
+                Persisted = Persisted,
+                BlobUrl = BlobUrl
             };
 
             foreach (var entryMedia in EntryMedia)

@@ -11,7 +11,6 @@ namespace Bog.Api.Db.DbContexts
 
         public IQueryable<TEntity> Get<TEntity>() where TEntity : class
         {
-
             return Set<TEntity>().AsQueryable();
         }
 
