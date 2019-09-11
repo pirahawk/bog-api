@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Bog.Api.Common;
 using Bog.Api.Common.Tests.Time;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.Models.Http;
@@ -77,6 +78,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
         public async Task MarksEntryMediaAsPersistedWhenSuccessful()
         {
             var expectedUriUpload = "http://test.com";
+            var uriAsBase64String = StringUtilities.ToBase64(expectedUriUpload);
             var entryMedia = new EntryMediaFixture().Build();
             var mockClock = new MockClock();
             var dbContextFixture = new MockBlogApiDbContextFixture();
@@ -91,7 +93,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
             var result = await coordinator.MarkUploadedSuccess(entryMedia, expectedUriUpload);
 
-            Assert.Equal( expectedUriUpload, result.BlobUrl);
+            Assert.Equal(uriAsBase64String, result.BlobUrl);
             Assert.Equal(mockClock.Now, result.Persisted);
             dbMock.Verify(ctx => ctx.Attach(entryMedia));
             dbMock.Verify(ctx => ctx.SaveChanges());

@@ -4,6 +4,7 @@ using Bog.Api.Domain.DbContext;
 using Bog.Api.Domain.Models.Http;
 using System;
 using System.Threading.Tasks;
+using Bog.Api.Common;
 
 namespace Bog.Api.Domain.Coordinators
 {
@@ -39,7 +40,7 @@ namespace Bog.Api.Domain.Coordinators
 
             _context.Attach(articleEntryMedia);
 
-            articleEntryMedia.BlobUrl = uploadUri;
+            articleEntryMedia.BlobUrl = StringUtilities.ToBase64(uploadUri);
             articleEntryMedia.Persisted = _clock.Now;
 
             await _context.SaveChanges();
