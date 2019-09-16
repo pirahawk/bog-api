@@ -1,7 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk" DefaultTargets="PublishApiNugetPackages">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Company>Bog.Api</Company>
+    <Authors>Bog.Api</Authors>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <NugetPublishDir>$(MSBuildProjectDirectory)\..\ApiNugetRepo</NugetPublishDir>
   </PropertyGroup>
+
+  <Target Name="PublishApiNugetPackages" AfterTargets="Pack" Condition="'$(GeneratePackageOnBuild)' == 'true'">
+    <ItemGroup>
+      <BogApiNugetPkg Include="$(OutputPath)..\*.nupkg"></BogApiNugetPkg>
+    </ItemGroup>
+
+    <MakeDir Directories="$(NugetPublishDir)" Condition="!Exists($(NugetPublishDir))"></MakeDir>
+    <Message Importance="high" Condition="!Exists($(NugetPublishDir))" Text="Could not move @(BogApiNugetPkg -> '%(Directory)%(Filename)%(Extension)') to $(NugetPublishDir) - Nuget publish directory does not exist!"></Message>
+    <Message Importance="high" Condition="Exists($(NugetPublishDir))" Text="Moving @(BogApiNugetPkg -> '%(Directory)%(Filename)%(Extension)') to $(NugetPublishDir)"></Message>
+    <Move SourceFiles="@(BogApiNugetPkg)" DestinationFolder="$(NugetPublishDir)" Condition="Exists($(NugetPublishDir))"></Move>
+  </Target>
 
 </Project>
