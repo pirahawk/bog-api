@@ -1,7 +1,6 @@
 ﻿using Bog.Api.Web.Configuration;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Bog.Api.Web
 {
