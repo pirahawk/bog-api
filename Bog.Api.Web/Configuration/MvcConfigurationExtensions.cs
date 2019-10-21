@@ -1,6 +1,7 @@
-﻿using Bog.Api.Web.Controllers;
-using Bog.Api.Web.Formatters;
+﻿using Bog.Api.Web.Formatters;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bog.Api.Web.Configuration
@@ -9,7 +10,20 @@ namespace Bog.Api.Web.Configuration
     {
         public static void WithMvc(this IServiceCollection services)
         {
-            services.AddMvc(SetupMvc);
+            // If using Kestrel:
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
+            // If using IIS:
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
+            //services.AddMvc(SetupMvc);
+            services.AddControllers(SetupMvc);
         }
 
         private static void SetupMvc(MvcOptions config)

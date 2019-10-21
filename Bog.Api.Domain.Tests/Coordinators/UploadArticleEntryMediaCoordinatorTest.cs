@@ -29,6 +29,8 @@ namespace Bog.Api.Domain.Tests.Coordinators
                 entryMedia.EntryContentId, 
                 entryMediaRequest.MediaContent, 
                 entryMediaRequest.ContentType));
+
+            await Task.CompletedTask;
         }
     }
 }

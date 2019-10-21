@@ -12,7 +12,6 @@ namespace Bog.Api.Web.Controllers
     [Route("api/entry")]
     public class EntriesController: Controller
     {
-        private readonly BlogApiSettings _apiSettings;
         private readonly ICreateAndPersistArticleEntryStrategy _persistArticleEntryStrategy;
         private readonly IGetLatestArticleEntryStrategy _getLatestArticleEntryStrategy;
 

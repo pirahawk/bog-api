@@ -9,16 +9,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using Microsoft.Extensions.Hosting;
 
 namespace Bog.Api.Web.Configuration.Filters
 {
     public class BlogDbContextStartupDataSeeder : IStartupFilter
     {
         private readonly ILogger<BlogDbContextStartupDataSeeder> _logger;
-        private readonly IHostingEnvironment _env;
+        private readonly IWebHostEnvironment _env;
         private readonly IClock _clock;
 
-        public BlogDbContextStartupDataSeeder(ILogger<BlogDbContextStartupDataSeeder> logger, IHostingEnvironment env, IClock clock)
+        public BlogDbContextStartupDataSeeder(ILogger<BlogDbContextStartupDataSeeder> logger, IWebHostEnvironment env, IClock clock)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _env = env;
