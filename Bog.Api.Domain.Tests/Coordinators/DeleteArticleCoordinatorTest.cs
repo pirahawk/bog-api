@@ -60,5 +60,33 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
             mock.Verify(ctx => ctx.SaveChanges());
         }
+
+        [Fact]
+        public async Task DoesNothingIfArticleAlreadyMarkedAsDeleted()
+        {
+            var article = new ArticleFixture
+            {
+                IsDeleted = true
+            }.Build();
+
+            var contextFixture = new MockBlogApiDbContextFixture()
+                .With(article, article.Id);
+
+            var mock = contextFixture.Mock;
+
+            var fixture = new DeleteArticleCoordinatorFixture
+            {
+                Context = contextFixture.Build()
+            };
+
+            var coordinator = fixture.Build();
+
+            Assert.True(article.IsDeleted);
+
+            var deleteResult = await coordinator.TryDeleteArticle(article.Id);
+
+            Assert.True(deleteResult);
+            mock.Verify(ctx => ctx.SaveChanges(), Times.Never);
+        }
     }
 }

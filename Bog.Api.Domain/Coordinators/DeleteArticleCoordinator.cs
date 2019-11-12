@@ -26,6 +26,11 @@ namespace Bog.Api.Domain.Coordinators
                 return false;
             }
 
+            if (articleToDelete.IsDeleted)
+            {
+                return true;
+            }
+
             articleToDelete.IsDeleted = true;
             articleToDelete.Deleted = _clock.Now;
             
