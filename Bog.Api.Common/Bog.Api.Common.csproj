@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" DefaultTargets="PublishApiNugetPackages">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <Company>Bog.Api</Company>
     <Authors>Bog.Api</Authors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -16,7 +16,7 @@
     <MakeDir Directories="$(NugetPublishDir)" Condition="!Exists($(NugetPublishDir))"></MakeDir>
     <Message Importance="high" Condition="!Exists($(NugetPublishDir))" Text="Could not move @(BogApiNugetPkg -> '%(Directory)%(Filename)%(Extension)') to $(NugetPublishDir) - Nuget publish directory does not exist!"></Message>
     <Message Importance="high" Condition="Exists($(NugetPublishDir))" Text="Moving @(BogApiNugetPkg -> '%(Directory)%(Filename)%(Extension)') to $(NugetPublishDir)"></Message>
-    <Move SourceFiles="@(BogApiNugetPkg)" DestinationFolder="$(NugetPublishDir)" Condition="Exists($(NugetPublishDir))"></Move>
+    <Copy SourceFiles="@(BogApiNugetPkg)" DestinationFolder="$(NugetPublishDir)" Condition="Exists($(NugetPublishDir))"></Copy>
   </Target>
 
 </Project>

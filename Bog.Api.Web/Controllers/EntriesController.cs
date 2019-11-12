@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace Bog.Api.Web.Controllers
 {
+    [ApiController]
     [Route("api/entry")]
-    public class EntriesController: Controller
+    public class EntriesController: ControllerBase
     {
-        private readonly BlogApiSettings _apiSettings;
         private readonly ICreateAndPersistArticleEntryStrategy _persistArticleEntryStrategy;
         private readonly IGetLatestArticleEntryStrategy _getLatestArticleEntryStrategy;
 

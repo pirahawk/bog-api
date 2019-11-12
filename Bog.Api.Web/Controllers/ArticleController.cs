@@ -3,14 +3,14 @@ using Bog.Api.Domain.Data;
 using Bog.Api.Domain.Models.Http;
 using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using System;
 using System.Threading.Tasks;
 
 namespace Bog.Api.Web.Controllers
 {
+    [ApiController]
     [Route("api/article")]
-    public class ArticleController : Controller
+    public class ArticleController : ControllerBase
     {
         private readonly ICreateArticleCoordinator _createArticleCoordinator;
         private readonly IFindBlogArticleCoordinator _findBlogArticleCoordinator;
@@ -47,7 +47,7 @@ namespace Bog.Api.Web.Controllers
             return Ok(response);
         }
 
-        [HttpPut]
+        [HttpPut()]
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateArticle(Guid id, [FromBody] ArticleRequest article)
         {
