@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Bog.Api.Web.Controllers
 {
+    [ApiController]
     [Route("api/media")]
-    public class EntryMediaController : Controller
+    public class EntryMediaController : ControllerBase
     {
         private readonly ICreateAndPersistArticleEntryMediaStrategy _createStrategy;
         private readonly IEntryMediaSearchStrategy _mediaSearchStrategy;

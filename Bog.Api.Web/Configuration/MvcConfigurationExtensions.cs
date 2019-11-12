@@ -22,8 +22,28 @@ namespace Bog.Api.Web.Configuration
                 options.AllowSynchronousIO = true;
             });
 
-            //services.AddMvc(SetupMvc);
-            services.AddControllers(SetupMvc);
+
+            //services.AddCors();
+            //services.AddCors(corsOpts =>
+            //{
+            //    corsOpts.AddPolicy("BogPolicy", builder =>
+            //    {
+            //        builder.AllowAnyHeader();
+            //        builder.AllowAnyMethod();
+            //        builder.AllowAnyOrigin();
+
+            //    });
+            //});
+
+            services
+                .AddControllers(SetupMvc)
+                .AddJsonOptions(opts =>
+                {
+                    opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                    opts.JsonSerializerOptions.AllowTrailingCommas = true;
+                    opts.JsonSerializerOptions.IgnoreNullValues = true;
+
+                });
         }
 
         private static void SetupMvc(MvcOptions config)
@@ -33,7 +53,6 @@ namespace Bog.Api.Web.Configuration
 
             config.InputFormatters.Add(new EntryContentFormatter());
             config.InputFormatters.Add(new ArticleEntryMediaRequestFormatter());
-
         }
     }
 }

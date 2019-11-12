@@ -2,8 +2,9 @@
 
 namespace Bog.Api.Web.Controllers
 {
+    [ApiController]
     [Route("api/ping")]
-    public class HealthCheckController : Controller
+    public class HealthCheckController : ControllerBase
     {
         [HttpGet()]
         public IActionResult Ping()

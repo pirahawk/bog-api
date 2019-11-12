@@ -1,7 +1,4 @@
-﻿using Bog.Api.Db.DbContexts;
-using Bog.Api.Domain.DbContext;
-using Bog.Api.Web.Configuration;
-using Bog.Api.Web.Configuration.Filters;
+﻿using Bog.Api.Web.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -38,8 +35,18 @@ namespace Bog.Api.Web
                 app.UseDeveloperExceptionPage();
             }
 
+            //app.UseCors(builder =>
+            //{
+            //    builder.AllowAnyOrigin();
+            //    builder.AllowAnyHeader();
+            //    builder.AllowAnyMethod();
+            //});
+
             app.UseRouting();
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
