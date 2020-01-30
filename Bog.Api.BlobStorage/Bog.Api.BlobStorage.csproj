@@ -1,32 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" DefaultTargets="PublishApiNugetPackages">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Company>Bog.Api</Company>
-    <Authors>Bog.Api</Authors>
-    <NugetPublishDir>$(MSBuildProjectDirectory)\..\ApiNugetRepo</NugetPublishDir>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Bog.Api.Common\Bog.Api.Common.csproj" />
     <ProjectReference Include="..\Bog.Api.Domain\Bog.Api.Domain.csproj" />
   </ItemGroup>
-
-  <Target Name="PublishApiNugetPackages" AfterTargets="Pack" Condition="'$(GeneratePackageOnBuild)' == 'true'">
-    <ItemGroup>
-      <BogApiNugetPkg Include="$(OutputPath)..\*.nupkg"></BogApiNugetPkg>
-    </ItemGroup>
-
-    <MakeDir Directories="$(NugetPublishDir)" Condition="!Exists($(NugetPublishDir))"></MakeDir>
-    <Message Importance="high" Condition="!Exists($(NugetPublishDir))" Text="Could not move @(BogApiNugetPkg -> '%(Directory)%(Filename)%(Extension)') to $(NugetPublishDir) - Nuget publish directory does not exist!"></Message>
-    <Message Importance="high" Condition="Exists($(NugetPublishDir))" Text="Moving @(BogApiNugetPkg -> '%(Directory)%(Filename)%(Extension)') to $(NugetPublishDir)"></Message>
-    <Copy SourceFiles="@(BogApiNugetPkg)" DestinationFolder="$(NugetPublishDir)" Condition="Exists($(NugetPublishDir))"></Copy>
-  </Target>
 
 </Project>
