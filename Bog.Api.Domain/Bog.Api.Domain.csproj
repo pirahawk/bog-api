@@ -1,34 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" DefaultTargets="PublishApiNugetPackages">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Bog.Api</Authors>
-    <Company>Bog.Api</Company>
-    <NugetPublishDir>$(MSBuildProjectDirectory)\..\ApiNugetRepo</NugetPublishDir>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Api\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="microsoft.extensions.logging.abstractions" Version="3.0.0" />
+    <PackageReference Include="microsoft.extensions.logging.abstractions" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Bog.Api.Common\Bog.Api.Common.csproj" />
   </ItemGroup>
-
-  <Target Name="PublishApiNugetPackages" AfterTargets="Pack" Condition="'$(GeneratePackageOnBuild)' == 'true'">
-    <ItemGroup>
-      <BogApiNugetPkg Include="$(OutputPath)..\*.nupkg"></BogApiNugetPkg>
-    </ItemGroup>
-
-    <MakeDir Directories="$(NugetPublishDir)" Condition="!Exists($(NugetPublishDir))"></MakeDir>
-    <Message Importance="high" Condition="!Exists($(NugetPublishDir))" Text="Could not move @(BogApiNugetPkg -> '%(Directory)%(Filename)%(Extension)') to $(NugetPublishDir) - Nuget publish directory does not exist!"></Message>
-    <Message Importance="high" Condition="Exists($(NugetPublishDir))" Text="Moving @(BogApiNugetPkg -> '%(Directory)%(Filename)%(Extension)') to $(NugetPublishDir)"></Message>
-    <Copy SourceFiles="@(BogApiNugetPkg)" DestinationFolder="$(NugetPublishDir)" Condition="Exists($(NugetPublishDir))"></Copy>
-  </Target>
 
 </Project>
