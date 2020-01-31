@@ -17,8 +17,8 @@ jobs:
       with:
         clean: 'true'
 
-    - name: build-dotnet
-      run: dotnet build --nologo
+    - name: publish-dotnet
+      run: dotnet publish -o ./nugetPublish --nologo
 
     - name: print-directory 
       run: ls -la

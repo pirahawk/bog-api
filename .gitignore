@@ -3,4 +3,4 @@
 .vs
 bin
 obj
-ApiNugetRepo
+nugetPublish
