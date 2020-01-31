@@ -1,4 +1,4 @@
-name: Bog API Build
+name: Bog-API-Build
 on: [push]
 
 jobs:

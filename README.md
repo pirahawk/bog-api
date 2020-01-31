@@ -1,0 +1,1 @@
+Project Build status: ![](https://github.com/pirahawk/bog-api/workflows/build%20and%20publish/badge.svg)
