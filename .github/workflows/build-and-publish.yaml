@@ -24,9 +24,10 @@ jobs:
       run: dotnet pack -o ./nugetPublish --nologo
 
     - name: push-nuget-package
-      run: dotnet nuget push ./nugetPublish/Bog.Api.Common.1.0.0.nupkg -k ${nuget_mgmt_token} -s https://nuget.pkg.github.com/pirahawk/index.json
+      run: dotnet nuget push ./nugetPublish/Bog.Api.Common.1.0.0.nupkg -k ${nuget_mgmt_token} -s ${nuget_source_url}
       env:
-        nuget_mgmt_token: ${{ secrets.nuget_mgmt_token }}  
+        nuget_mgmt_token: ${{ secrets.nuget_mgmt_token }}
+        nuget_source_url: ${{ 'https://nuget.pkg.github.com/pirahawk/index.json' }}  
 
     - name: print-directory 
       run: ls -la
