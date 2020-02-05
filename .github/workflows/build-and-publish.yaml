@@ -24,7 +24,7 @@ jobs:
       run: dotnet publish -o ./nugetPublish --nologo
 
     - name: push-nuget-package
-      run: dotnet nuget push ./nugetPublish/Bog.Api.Common.1.0.0.nupkg -k ${GITHUB_TOKEN}
+      run: dotnet nuget push ./nugetPublish/Bog.Api.Common.1.0.0.nupkg -k ${GITHUB_TOKEN} -s https://nuget.pkg.github.com/pirahawk/index.json
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
 
