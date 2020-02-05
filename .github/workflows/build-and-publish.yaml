@@ -24,7 +24,7 @@ jobs:
       run: dotnet pack -o ./nugetPublish --nologo
 
     - name: push-nuget-package
-      run: dotnet nuget push ./nugetPublish/Bog.Api.Common.1.0.0.nupkg --source ${nuget_source_url} --no-service-endpoint -k ${nuget_mgmt_token} 
+      run: dotnet nuget push ./nugetPublish/Bog.Api.Common.1.0.0.nupkg --source ${nuget_source_url}  -k ${nuget_mgmt_token} --no-service-endpoint
       env:
         nuget_mgmt_token: ${{ secrets.nuget_mgmt_token }}
         nuget_source_url: ${{ 'https://nuget.pkg.github.com/pirahawk/index.json' }}  
