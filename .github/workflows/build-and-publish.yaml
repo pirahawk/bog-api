@@ -23,6 +23,11 @@ jobs:
     - name: publish-nuget-packages
       run: dotnet publish -o ./nugetPublish --nologo
 
+    - name: push-nuget-package
+      run: dotnet nuget push ./nugetPublish/Bog.Api.Common.1.0.0.nupkg -k ${GITHUB_TOKEN}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+
     - name: print-directory 
       run: ls -la
 
