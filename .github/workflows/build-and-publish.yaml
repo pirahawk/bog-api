@@ -31,14 +31,16 @@ jobs:
     - name: build-dotnet
       run: dotnet build --nologo
     
-    - name: pack-nuget-packages
+    - name: pack-nuget-packages-master
+      if:  github.event_name == 'push' && github.ref == 'refs/heads/master'
       run: dotnet pack -o ./nugetPublish --nologo  /p:version=1.0.${{github.run_number}}
+    
+    - name: pack-nuget-packages-pre-release
+      if:  github.event_name == 'push' && github.ref != 'refs/heads/master'
+      run: dotnet pack -o ./nugetPublish --nologo  /p:version=1.0.${{github.run_number}}-alpha
 
     - name: push-common-nuget-to-package-store
       run: dotnet nuget push ./nugetPublish/*Common.[1-9]*.nupkg -s 'github'
-      # env:
-      #   nuget_mgmt_token: ${{ secrets.nuget_mgmt_token }}
-      #   nuget_source_url: ${{ 'https://nuget.pkg.github.com/pirahawk/index.json' }}  
     
     - name: push-domain-nuget-to-package-store
       run: dotnet nuget push ./nugetPublish/*Domain.[1-9]*.nupkg -s 'github'
@@ -62,12 +64,3 @@ jobs:
 
     - name: run-tests
       run: dotnet test --nologo
-
-  print_stuff:
-    name: Print Stuff
-    runs-on: ubuntu-latest
-    steps:     
-    - name: Dump GitHub context
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
