@@ -11,26 +11,40 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '3.1.100'
-      
+
+    - name: setup-nuget
+      uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: 'latest'
+
     - name: checkout-repo
       uses: actions/checkout@v2
       with:
         clean: 'true'
 
+    - name: echo-things
+      run: echo '${{github.workspace}} - ${{github.run_id}} - ${{github.run_number}}'
+    
+    - name: setup-nuget-source
+      run: nuget sources add -Name "github" -Source "https://nuget.pkg.github.com/pirahawk/index.json" -username "pirahawk" -password "${{secrets.GITHUB_TOKEN}}" -StorePasswordInClearText -configfile ./nuget.config
+
     - name: build-dotnet
       run: dotnet build --nologo
     
     - name: pack-nuget-packages
-      run: dotnet pack -o ./nugetPublish --nologo
+      run: dotnet pack -o ./nugetPublish --nologo  /p:version=1.0.${{github.run_number}}
 
-    - name: push-nuget-package
-      run: dotnet nuget push ./nugetPublish/Bog.Api.Common.1.0.0.nupkg --source ${nuget_source_url}  -k ${nuget_mgmt_token} --no-service-endpoint
-      env:
-        nuget_mgmt_token: ${{ secrets.nuget_mgmt_token }}
-        nuget_source_url: ${{ 'https://nuget.pkg.github.com/pirahawk/index.json' }}  
+    - name: push-common-nuget-to-package-store
+      run: dotnet nuget push ./nugetPublish/*Common.[1-9]*.nupkg -s 'github'
+      # env:
+      #   nuget_mgmt_token: ${{ secrets.nuget_mgmt_token }}
+      #   nuget_source_url: ${{ 'https://nuget.pkg.github.com/pirahawk/index.json' }}  
+    
+    - name: push-domain-nuget-to-package-store
+      run: dotnet nuget push ./nugetPublish/*Domain.[1-9]*.nupkg -s 'github'
 
     - name: print-directory 
-      run: ls -la
+      run: ls -la ./nugetPublish
 
   run_tests:
     name: Run Tests

@@ -3,6 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Bog.Api.Domain</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>pirahawk</Authors>
+    <RepositoryUrl>https://github.com/pirahawk/bog-api</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
