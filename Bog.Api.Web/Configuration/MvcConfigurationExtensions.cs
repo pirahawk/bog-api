@@ -14,6 +14,7 @@ namespace Bog.Api.Web.Configuration
             services.Configure<KestrelServerOptions>(options =>
             {
                 options.AllowSynchronousIO = true;
+                
             });
 
             // If using IIS:
@@ -35,15 +36,20 @@ namespace Bog.Api.Web.Configuration
             //    });
             //});
 
-            services
-                .AddControllers(SetupMvc)
-                .AddJsonOptions(opts =>
-                {
-                    opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-                    opts.JsonSerializerOptions.AllowTrailingCommas = true;
-                    opts.JsonSerializerOptions.IgnoreNullValues = true;
 
-                });
+
+            //services
+            //    .AddControllers(SetupMvc)
+            //    .AddJsonOptions(opts =>
+            //    {
+            //        opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+            //        opts.JsonSerializerOptions.AllowTrailingCommas = true;
+            //        opts.JsonSerializerOptions.IgnoreNullValues = true;
+
+            //    });
+
+
+            services.AddMvc(SetupMvc);
         }
 
         private static void SetupMvc(MvcOptions config)
@@ -53,6 +59,7 @@ namespace Bog.Api.Web.Configuration
 
             config.InputFormatters.Add(new EntryContentFormatter());
             config.InputFormatters.Add(new ArticleEntryMediaRequestFormatter());
+            
         }
     }
 }

@@ -22,8 +22,8 @@ namespace Bog.Api.Web.Controllers
             _getLatestArticleEntryStrategy = getLatestArticleEntryStrategy;
         }
 
-        [HttpPost]
         [Route("{articleId:guid}")]
+        [HttpPost]
         [RequestSizeLimit(BlogApiSettings.MAX_ENTRY_REQUEST_LIMIT_BYTES)]
         public async Task<IActionResult> AddArticleEntry(Guid articleId, [FromBody]ArticleEntry post)
         {

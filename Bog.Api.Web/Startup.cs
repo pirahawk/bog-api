@@ -19,13 +19,14 @@ namespace Bog.Api.Web
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddDbContext<BlogApiDbContext>((sp, dbCtxBuilder) => { dbCtxBuilder.Options.UseSqlServer(); });
+            services.WithMvc();
             services.WithUtilities();
             services.WithCloudUtilities();
             services.WithApiConfiguration(_configuration);
             services.WithEFDbContext();
             services.WithBlogStartupFilters();
             services.WithDTOCoordinators();
-            services.WithMvc();
+            
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
