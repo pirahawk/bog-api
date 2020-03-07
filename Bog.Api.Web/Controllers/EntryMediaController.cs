@@ -43,6 +43,11 @@ namespace Bog.Api.Web.Controllers
 
             var entryMedia = await _createStrategy.PersistArticleEntryMediaAsync(media);
 
+            if (entryMedia == null)
+            {
+                return BadRequest();
+            }
+
             return Ok();
         }
 

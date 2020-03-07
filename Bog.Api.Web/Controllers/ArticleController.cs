@@ -47,7 +47,7 @@ namespace Bog.Api.Web.Controllers
             return Ok(response);
         }
 
-        [HttpPut()]
+        [HttpPut]
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateArticle(Guid id, [FromBody] ArticleRequest article)
         {
