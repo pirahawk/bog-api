@@ -19,12 +19,12 @@ namespace Bog.Api.Domain.Coordinators
         {
             if (mediaMD5Base64Hash == null) throw new ArgumentNullException(nameof(mediaMD5Base64Hash));
 
-            var entryMediae = _context.Query<Article>()
+            var entryMedia = _context.Query<Article>()
                 .Where(a => a.ArticleEntries.Any(ae => ae.Id == entryId))
                 .SelectMany(a => a.ArticleEntries)
                 .SelectMany(ae=>ae.EntryMedia);
 
-            var matchingEntryMedia = entryMediae
+            var matchingEntryMedia = entryMedia
                 .FirstOrDefault(em => em.MD5Base64Hash == mediaMD5Base64Hash);
 
             return await Task.FromResult(matchingEntryMedia);

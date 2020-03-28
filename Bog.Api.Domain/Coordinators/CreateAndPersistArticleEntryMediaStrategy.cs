@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Bog.Api.Common;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.Models.Http;
 
@@ -29,9 +30,9 @@ namespace Bog.Api.Domain.Coordinators
             if (articleEntryMedia != null)
             {
                 var existingMediaMatch = await searchTask;
-
+                
                 return existingMediaMatch != null ?
-                    await StoreBlobUriAndMarkUploadSuccess(articleEntryMedia, existingMediaMatch.BlobUrl)
+                    await StoreBlobUriAndMarkUploadSuccess(articleEntryMedia, StringUtilities.FromBase64(existingMediaMatch.BlobUrl))
                     : await UploadMediaContent(entryMediaRequest, articleEntryMedia);
             }
 

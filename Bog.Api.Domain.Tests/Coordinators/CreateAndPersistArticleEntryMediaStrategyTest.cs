@@ -1,4 +1,5 @@
-﻿using Bog.Api.Domain.Coordinators;
+﻿using Bog.Api.Common;
+using Bog.Api.Domain.Coordinators;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.Models.Http;
 using Bog.Api.Domain.Tests.Data;
@@ -76,10 +77,13 @@ namespace Bog.Api.Domain.Tests.Coordinators
         public async void DoesNotAttemptPersistToBlobStoreWhenEntrymediaWithSameHashExists()
         {
             var entryMedia = new EntryMediaFixture().Build();
+            var blobUrlBase64Encoded = StringUtilities.ToBase64("existingBlobUrl");
+            var expectedDecodedUrl = StringUtilities.FromBase64(blobUrlBase64Encoded);
+
             var existingEntryMediaWithSameHash = new EntryMediaFixture
             {
                 MD5Base64Hash = entryMedia.MD5Base64Hash,
-                BlobUrl = "existingBlobUrl"
+                BlobUrl = blobUrlBase64Encoded
             }.Build();
 
             var articleEntryMediaRequest = new ArticleEntryMediaRequest
@@ -105,14 +109,12 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
             }.Build();
 
-
             var result = await strategy.PersistArticleEntryMediaAsync(articleEntryMediaRequest);
 
             Assert.Equal(entryMedia, result);
             mockSearch.Verify(ms => ms.Find(entryMedia.EntryContentId, articleEntryMediaRequest.MD5Base64Hash));
-
             mockBlob.Verify(blob => blob.UploadEntryMedia(articleEntryMediaRequest, entryMedia), Times.Never());
-            mockCoordinator.Verify(cc => cc.MarkUploadedSuccess(entryMedia, existingEntryMediaWithSameHash.BlobUrl));
+            mockCoordinator.Verify(cc => cc.MarkUploadedSuccess(entryMedia, expectedDecodedUrl));
         }
     }
 }
