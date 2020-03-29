@@ -17,17 +17,34 @@ namespace Bog.Api.Domain.Coordinators
 
         public async Task<EntryMedia> Find(Guid entryId, string mediaMD5Base64Hash)
         {
-            if (mediaMD5Base64Hash == null) throw new ArgumentNullException(nameof(mediaMD5Base64Hash));
+            if (string.IsNullOrWhiteSpace(mediaMD5Base64Hash))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(mediaMD5Base64Hash));
 
-            var entryMedia = _context.Query<Article>()
-                .Where(a => a.ArticleEntries.Any(ae => ae.Id == entryId))
-                .SelectMany(a => a.ArticleEntries)
-                .SelectMany(ae=>ae.EntryMedia);
-
-            var matchingEntryMedia = entryMedia
-                .FirstOrDefault(em => em.MD5Base64Hash == mediaMD5Base64Hash);
+            var entryMedia = GetAllMediaUploadedForArticle(entryId);
+            var matchingEntryMedia = entryMedia.FirstOrDefault(em => em.MD5Base64Hash == mediaMD5Base64Hash);
 
             return await Task.FromResult(matchingEntryMedia);
+        }
+
+        public async Task<EntryMedia> Find(Guid entryId, string mediaMd5Base64Hash, string mediaFileName)
+        {
+            if (string.IsNullOrWhiteSpace(mediaMd5Base64Hash))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(mediaMd5Base64Hash));
+            if (string.IsNullOrWhiteSpace(mediaFileName))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(mediaFileName));
+
+            var entryMedia = GetAllMediaUploadedForArticle(entryId);
+            var matchingEntryMedia = entryMedia.FirstOrDefault(em => em.MD5Base64Hash.Equals(mediaMd5Base64Hash) && em.FileName.Equals(mediaFileName));
+
+            return await Task.FromResult(matchingEntryMedia);
+        }
+
+        private IQueryable<EntryMedia> GetAllMediaUploadedForArticle(Guid entryId)
+        {
+            return _context.Query<Article>()
+                .Where(a => a.ArticleEntries.Any(ae => ae.Id == entryId))
+                .SelectMany(a => a.ArticleEntries)
+                .SelectMany(ae => ae.EntryMedia);
         }
     }
 }

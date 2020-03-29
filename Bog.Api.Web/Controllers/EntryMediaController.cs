@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System;
 using System.Threading.Tasks;
+using Bog.Api.Common;
+using Bog.Api.Domain.Data;
 
 namespace Bog.Api.Web.Controllers
 {
@@ -53,14 +55,23 @@ namespace Bog.Api.Web.Controllers
 
         [Route("{entryId:guid}")]
         [HttpHead]
-        public async Task<IActionResult> FindEntryMedia(Guid entryId, [FromHeader(Name = "If-Match")] string ifMatch)
+        public async Task<IActionResult> FindEntryMedia(Guid entryId, 
+            [FromHeader(Name = "If-Match")] string ifMatch, 
+            [FromHeader(Name = "Content-Disposition")] string contentDisposition)
         {
             if (string.IsNullOrWhiteSpace(ifMatch))
             {
                 return NotFound();
             }
-            
-            var result = await _mediaSearchStrategy.Find(entryId, ifMatch);
+
+             ;
+            string fileName = HeaderUtilityHelper.TryGetContentDispositionFileName(contentDisposition);
+
+
+            EntryMedia result = string.IsNullOrWhiteSpace(fileName)
+                ? await _mediaSearchStrategy.Find(entryId, ifMatch)
+                : await _mediaSearchStrategy.Find(entryId, ifMatch, fileName);
+
 
             if (result == null)
             {

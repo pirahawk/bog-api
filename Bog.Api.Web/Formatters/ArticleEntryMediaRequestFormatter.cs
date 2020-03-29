@@ -1,13 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Bog.Api.Common;
+﻿using Bog.Api.Common;
 using Bog.Api.Domain.Models.Http;
 using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
+using System;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Bog.Api.Web.Formatters
 {
@@ -76,13 +75,8 @@ namespace Bog.Api.Web.Formatters
 
             var stringValues = httpContextRequest.Headers[HeaderNames.ContentDisposition];
             var contentDispositionString = stringValues.FirstOrDefault();
-
-            if(!ContentDispositionHeaderValue.TryParse(new StringSegment(contentDispositionString), out var dispositionHeaderValue))
-            {
-                return null;
-            }
-
-            return dispositionHeaderValue.FileName.Value;
+            var fileName = HeaderUtilityHelper.TryGetContentDispositionFileName(contentDispositionString);
+            return fileName;
         }
     }
 }
