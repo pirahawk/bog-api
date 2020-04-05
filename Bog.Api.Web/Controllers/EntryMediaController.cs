@@ -64,10 +64,8 @@ namespace Bog.Api.Web.Controllers
                 return NotFound();
             }
 
-             ;
+            ifMatch = ifMatch.Replace("\"", string.Empty);
             string fileName = HeaderUtilityHelper.TryGetContentDispositionFileName(contentDisposition);
-
-
             EntryMedia result = string.IsNullOrWhiteSpace(fileName)
                 ? await _mediaSearchStrategy.Find(entryId, ifMatch)
                 : await _mediaSearchStrategy.Find(entryId, ifMatch, fileName);
