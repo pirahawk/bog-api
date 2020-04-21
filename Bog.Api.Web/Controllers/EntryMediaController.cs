@@ -3,9 +3,12 @@ using Bog.Api.Domain.Models.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bog.Api.Common;
 using Bog.Api.Domain.Data;
+using Bog.Api.Domain.Models.Article;
+using Bog.Api.Domain.Values;
 
 namespace Bog.Api.Web.Controllers
 {
@@ -35,8 +38,8 @@ namespace Bog.Api.Web.Controllers
                 return NotFound();
             }
 
-            //TODO this is tacky, wrap in something useful please
-            return Ok(articleLookup);
+            var response = MapMediaResponse(articleId, articleLookup);
+            return Ok(response);
         }
 
         [Route("{entryId:guid}")]
@@ -94,6 +97,22 @@ namespace Bog.Api.Web.Controllers
             }
 
             return NoContent();
+        }
+
+        private ArticleMediaLookupResponse MapMediaResponse(Guid articleId, ArticleMediaLookup articleLookup)
+        {
+            var links = new Link[]
+            {
+                new Link {Relation = LinkRelValueObject.ARTICLE, Href = Url.Action("GetArticle", "Article", new { id = articleId})},
+            };
+
+            var lookup = articleLookup?.MediaLookup ?? new Dictionary<string, string>();
+            return new ArticleMediaLookupResponse
+            {
+                ArticleId = articleId,
+                MediaLookup = lookup,
+                Links = links
+            };
         }
     }
 }
