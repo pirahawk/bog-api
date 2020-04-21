@@ -35,7 +35,8 @@ namespace Bog.Api.Web.Controllers
                 return NotFound();
             }
 
-            return Ok();
+            //TODO this is tacky, wrap in something useful please
+            return Ok(articleLookup);
         }
 
         [Route("{entryId:guid}")]

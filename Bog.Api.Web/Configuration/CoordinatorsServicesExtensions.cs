@@ -23,7 +23,7 @@ namespace Bog.Api.Web.Configuration
             services.AddTransient<IEntryMediaSearchStrategy, EntryMediaSearchStrategy>();
             services.AddTransient<IGetLatestArticleEntryStrategy, GetLatestArticleEntryStrategy>();
             services.AddTransient<IGetArticleMediaLookupStrategy, GetArticleMediaLookupStrategy>();
-
+            services.AddTransient<IGetMediaLookupQuery, GetMediaLookupQuery>();
         }
     }
 }
