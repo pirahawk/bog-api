@@ -60,7 +60,6 @@ namespace Bog.Api.Web.Controllers
                 new Link {Relation = LinkRelValueObject.ARTICLE, Href = Url.Action("GetArticle", "Article", new { id = result.ArticleId})},
                 new Link {Relation = LinkRelValueObject.SELF, Href = Url.Action(nameof(GetLatestArticleEntry), new { articleId = result.ArticleId})},
                 new Link {Relation = LinkRelValueObject.MEDIA, Href = Url.Action("UploadMediaContent", "EntryMedia", new { entryId = result.Id})},
-
             };
 
             return new ArticleEntryResponse

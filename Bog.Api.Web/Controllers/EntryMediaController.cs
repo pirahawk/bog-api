@@ -15,11 +15,27 @@ namespace Bog.Api.Web.Controllers
     {
         private readonly ICreateAndPersistArticleEntryMediaStrategy _createStrategy;
         private readonly IEntryMediaSearchStrategy _mediaSearchStrategy;
+        private readonly IGetArticleMediaLookupStrategy _getArticleMediaLookupStrategy;
 
-        public EntryMediaController(ICreateAndPersistArticleEntryMediaStrategy createStrategy, IEntryMediaSearchStrategy mediaSearchStrategy)
+        public EntryMediaController(ICreateAndPersistArticleEntryMediaStrategy createStrategy, IEntryMediaSearchStrategy mediaSearchStrategy, IGetArticleMediaLookupStrategy getArticleMediaLookupStrategy)
         {
             _createStrategy = createStrategy;
             _mediaSearchStrategy = mediaSearchStrategy;
+            _getArticleMediaLookupStrategy = getArticleMediaLookupStrategy;
+        }
+
+        [Route("{articleId:guid}")]
+        [HttpGet]
+        public async Task<IActionResult> GetMediaContentLookup(Guid articleId)
+        {
+            var articleLookup = await _getArticleMediaLookupStrategy.GetMediaLookup(articleId);
+
+            if (articleLookup == null)
+            {
+                return NotFound();
+            }
+
+            return Ok();
         }
 
         [Route("{entryId:guid}")]
