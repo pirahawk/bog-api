@@ -43,7 +43,7 @@ namespace Bog.Api.Domain.Coordinators
                 .Select(mediaProjection => new MediaProjection
                 {
                     FileName = mediaProjection.FileName,
-                    DownloadLink = StringUtilities.FromBase64(mediaProjection.TopDownloadLink)
+                    DownloadLink = mediaProjection.TopDownloadLink
                 })
                 .ToArray()
                 .Distinct(MediaProjection.FileNameComparer)

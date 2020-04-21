@@ -11,7 +11,7 @@ namespace Bog.Api.Common.Tests.Time
 
         public MockClock()
         {
-            MockTime = new DateTimeOffset(2019, 1, 1, 12, 12, 12, TimeSpan.FromSeconds(0));
+            MockTime = new DateTimeOffset(2020, 1, 1, 12, 12, 12, TimeSpan.FromSeconds(0));
         }
     }
 }
