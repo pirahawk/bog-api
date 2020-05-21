@@ -4,14 +4,16 @@ using Bog.Api.Db.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Bog.Api.Db.Migrations
 {
     [DbContext(typeof(BlogApiDbContext))]
-    partial class BlogApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200521220531_addArticleMetaData")]
+    partial class addArticleMetaData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

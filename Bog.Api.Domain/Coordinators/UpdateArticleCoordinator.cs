@@ -38,8 +38,10 @@ namespace Bog.Api.Domain.Coordinators
 
         private void UpdateValues(Article existingArticle, ArticleRequest updatedArticle)
         {
-            existingArticle.Author = updatedArticle.Author;
-            existingArticle.IsPublished = updatedArticle.IsPublished;
+            existingArticle.Author = updatedArticle.Author ?? existingArticle.Author;
+            existingArticle.Title = updatedArticle.Title ?? existingArticle.Title;
+            existingArticle.Description = updatedArticle.Description ?? existingArticle.Description;
+            existingArticle.IsPublished = updatedArticle.IsPublished ?? existingArticle.IsPublished;
             existingArticle.Updated = _clock.Now;
         }
     }

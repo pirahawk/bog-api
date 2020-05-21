@@ -1,8 +1,14 @@
-﻿using Bog.Api.Common.Tests.Time;
+﻿using System;
+using System.Threading.Tasks;
+using Bog.Api.Common.Tests.Time;
 using Bog.Api.Common.Time;
 using Bog.Api.Domain.Coordinators;
+using Bog.Api.Domain.Data;
 using Bog.Api.Domain.DbContext;
+using Bog.Api.Domain.Models.Http;
 using Bog.Api.Domain.Tests.DbContext;
+using Moq;
+using Xunit;
 
 namespace Bog.Api.Domain.Tests.Coordinators
 {
@@ -21,6 +27,5 @@ namespace Bog.Api.Domain.Tests.Coordinators
         {
             return new CreateArticleCoordinator(Context, Clock);
         }
-
     }
 }
