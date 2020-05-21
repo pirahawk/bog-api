@@ -5,6 +5,7 @@ using Bog.Api.Domain.Tests.Data;
 using Bog.Api.Domain.Tests.DbContext;
 using Moq;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -12,6 +13,9 @@ namespace Bog.Api.Domain.Tests.Coordinators
 {
     public class UpdateArticleCoordinatorTest
     {
+
+        
+
         [Fact]
         public async Task ReturnsFalseWhenArticleNotFound()
         {
@@ -33,28 +37,109 @@ namespace Bog.Api.Domain.Tests.Coordinators
             Assert.False(result);
         }
 
-        [Fact]
-        public async Task UpdatesArticleDataWhenFound()
+
+        public static IEnumerable<object[]> IncrementalUpdateCases
         {
-            var existingArticleId = Guid.NewGuid();
-            var updatedArticle = new ArticleRequest
+            get
             {
-                Author = "Second",
-                Title = "Second-Title",
-                Description = "Second-Description",
-                KeyWords = "Second-KeyWords",
-                IsPublished = true
-            };
-            var articleFixture = new ArticleFixture
-            {
-                Id =  existingArticleId,
-                Author = "First"
-            };
-            var existingArticle = articleFixture.Build();
+                var articleFixture = new ArticleFixture
+                {
+                    Author = "First",
+                    Title = "First-Title",
+                    Description = "First-Description",
+                    IsPublished = false
+                };
+
+                var update1 = new ArticleRequest
+                {
+                    Author = "Second",
+                    Title = "Second-Title",
+                    Description = "Second-Description",
+                    IsPublished = true
+                };
+                
+                Action<Article, ArticleRequest> resultCheck1 = (article, request) =>
+                {
+                    Assert.Equal(article.Author, request.Author);
+                    Assert.Equal(article.Title, request.Title);
+                    Assert.Equal(article.Description, request.Description);
+                    Assert.Equal(article.IsPublished, request.IsPublished);
+                }; 
+
+                yield return new object[] { articleFixture.Build(), update1, resultCheck1 };
+
+                var update2 = new ArticleRequest
+                {
+                    Author = "Second",
+                };
+
+                Action<Article, ArticleRequest> resultCheck2 = (article, request) =>
+                {
+                    Assert.Equal(article.Author, request.Author);
+                    Assert.Equal(article.Title, articleFixture.Title);
+                    Assert.Equal(article.Description, articleFixture.Description);
+                    Assert.Equal(article.IsPublished, articleFixture.IsPublished);
+                };
+
+                yield return new object[] { articleFixture.Build(), update2, resultCheck2 };
+
+
+                var update3 = new ArticleRequest
+                {
+                    Title = "Second",
+                };
+
+                Action<Article, ArticleRequest> resultCheck3 = (article, request) =>
+                {
+                    Assert.Equal(article.Author, articleFixture.Author);
+                    Assert.Equal(article.Title, request.Title);
+                    Assert.Equal(article.Description, articleFixture.Description);
+                    Assert.Equal(article.IsPublished, articleFixture.IsPublished);
+                };
+
+                yield return new object[] { articleFixture.Build(), update3, resultCheck3 };
+
+
+                var update4 = new ArticleRequest
+                {
+                    Description = "Second",
+                };
+
+                Action<Article, ArticleRequest> resultCheck4 = (article, request) =>
+                {
+                    Assert.Equal(article.Author, articleFixture.Author);
+                    Assert.Equal(article.Title, articleFixture.Title);
+                    Assert.Equal(article.Description, request.Description);
+                    Assert.Equal(article.IsPublished, articleFixture.IsPublished);
+                };
+
+                yield return new object[] { articleFixture.Build(), update4, resultCheck4 };
+
+                var update5 = new ArticleRequest
+                {
+                    IsPublished = !articleFixture.IsPublished
+                };
+
+                Action<Article, ArticleRequest> resultCheck5 = (article, request) =>
+                {
+                    Assert.Equal(article.Author, articleFixture.Author);
+                    Assert.Equal(article.Title, articleFixture.Title);
+                    Assert.Equal(article.Description, articleFixture.Description);
+                    Assert.Equal(article.IsPublished, request.IsPublished);
+                };
+
+                yield return new object[] { articleFixture.Build(), update5, resultCheck5 };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(IncrementalUpdateCases))]
+        public async Task IncrementallyUpdatesArticleDataPartsWhenFound(Article existingArticle, ArticleRequest updatedArticle, Action<Article, ArticleRequest> validationAction)
+        {
             var contextFixture = new MockBlogApiDbContextFixture();
 
             contextFixture.Mock
-                .Setup(ctx => ctx.Find<Article>(existingArticleId))
+                .Setup(ctx => ctx.Find<Article>(existingArticle.Id))
                 .Returns(async () =>
                 {
                     await Task.CompletedTask;
@@ -73,18 +158,14 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
             Assert.False(existingArticle.Updated.HasValue);
 
+            var result = await coordinator.TryUpdateArticle(existingArticle.Id, updatedArticle);
 
-            Assert.NotEqual(updatedArticle.Author, existingArticle.Author);
-
-            var result = await coordinator.TryUpdateArticle(existingArticleId, updatedArticle);
-
-            contextFixture.Mock.Verify(ctx => ctx.Find<Article>(existingArticleId));
+            contextFixture.Mock.Verify(ctx => ctx.Find<Article>(existingArticle.Id));
             contextFixture.Mock.Verify(ctx => ctx.SaveChanges());
 
             Assert.True(result);
-            Assert.Equal(updatedArticle.Author, existingArticle.Author);
-            Assert.Equal(updatedArticle.IsPublished, existingArticle.IsPublished);
             Assert.Equal(clock.Now, existingArticle.Updated.GetValueOrDefault());
+            validationAction(existingArticle, updatedArticle);
         }
     }
 }
