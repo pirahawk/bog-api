@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Bog.Api.Domain.Tests.Coordinators
 {
-    public class CreateBlogEntryCoordinatorTest
+    public class CreateArticleCoordinatorTest
     {
         public static IEnumerable<Object[]> ErrorTestCases
         {
@@ -29,10 +29,20 @@ namespace Bog.Api.Domain.Tests.Coordinators
                 var entryWithNoAuthor = new ArticleRequest
                 {
                     BlogId = blog.Id,
-                    Author = string.Empty
+                    Author = string.Empty,
+                    Title = "Some-title"
                 };
 
-                yield return new object[] { entryWithNoMatchingBlog, new[]{ blog} };
+                yield return new object[] { entryWithNoAuthor, new[]{ blog} };
+
+                var entryWithNoTitle = new ArticleRequest
+                {
+                    BlogId = blog.Id,
+                    Author = "Some-author",
+                    Title = string.Empty
+                };
+
+                yield return new object[] { entryWithNoTitle, new[] { blog } };
 
             }
         }
@@ -64,7 +74,10 @@ namespace Bog.Api.Domain.Tests.Coordinators
             var newEntryRequest = new ArticleRequest
             {
                 BlogId = blog.Id,
-                Author = "Test"
+                Author = "Test",
+                Title = "Some-title",
+                Description = "some-Description",
+                KeyWords = "some-KeyWords",
             };
 
             var dbContextFixture = new MockBlogApiDbContextFixture().With(blog, blog.Id);
@@ -80,8 +93,9 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
             Assert.Equal(newEntryRequest.BlogId, result.BlogId);
             Assert.Equal(newEntryRequest.Author, result.Author);
+            Assert.Equal(newEntryRequest.Title, result.Title);
+            Assert.Equal(newEntryRequest.Description, result.Description);
             Assert.Equal(clock.Now, result.Created);
-
 
             dbContextFixture.Mock.Verify(ctx => ctx.Add(result));
             dbContextFixture.Mock.Verify(ctx => ctx.SaveChanges());

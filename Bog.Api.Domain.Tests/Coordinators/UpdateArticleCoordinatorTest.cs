@@ -40,6 +40,9 @@ namespace Bog.Api.Domain.Tests.Coordinators
             var updatedArticle = new ArticleRequest
             {
                 Author = "Second",
+                Title = "Second-Title",
+                Description = "Second-Description",
+                KeyWords = "Second-KeyWords",
                 IsPublished = true
             };
             var articleFixture = new ArticleFixture

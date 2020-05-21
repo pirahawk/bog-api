@@ -16,6 +16,10 @@ namespace Bog.Api.Domain.Tests.Data
 
         public string Author { get; set; }
 
+        public string Title { get; set; }
+
+        public string Description { get; set; }
+
         public bool IsPublished { get; set; }
 
         public DateTimeOffset Created { get; set; }
@@ -36,6 +40,8 @@ namespace Bog.Api.Domain.Tests.Data
             Blog = blogFixture.Build();
             BlogId = blogFixture.Id;
             Author = "test";
+            Title = "some-post";
+            Description = "some post about something";
             IsPublished = false;
             Created = DateTimeOffset.UtcNow;
             IsDeleted = false;
@@ -48,6 +54,8 @@ namespace Bog.Api.Domain.Tests.Data
             {
                 Id = Id,
                 Author = Author,
+                Title = Title,
+                Description = Description,
                 Blog = Blog,
                 BlogId = BlogId,
                 Created = Created,
@@ -69,7 +77,7 @@ namespace Bog.Api.Domain.Tests.Data
 
         public ArticleFixture WithEntry(params EntryContent[] entries)
         {
-            ArticleEntries = ArticleEntries ?? Enumerable.Empty<EntryContent>().ToList();
+            ArticleEntries ??= Enumerable.Empty<EntryContent>().ToList();
             ArticleEntries.AddRange(entries);
             return this;
         }

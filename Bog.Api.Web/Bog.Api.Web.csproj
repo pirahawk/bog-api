@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Bog.Api.BlobStorage\Bog.Api.BlobStorage.csproj" />
     <ProjectReference Include="..\Bog.Api.Common\Bog.Api.Common.csproj" />
     <ProjectReference Include="..\Bog.Api.Db\Bog.Api.Db.csproj" />

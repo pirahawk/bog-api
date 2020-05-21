@@ -29,7 +29,8 @@ namespace Bog.Api.Domain.Coordinators
             var blog = await GetBlogForEntry(request.BlogId);
 
             if (blog == null
-                || string.IsNullOrWhiteSpace(request.Author))
+                || string.IsNullOrWhiteSpace(request.Author)
+                || string.IsNullOrWhiteSpace(request.Title))
             {
                 return null;
             }
@@ -38,6 +39,8 @@ namespace Bog.Api.Domain.Coordinators
             {
                 BlogId = blog.Id,
                 Author = request.Author,
+                Title = request.Title,
+                Description = request.Description,
                 Created = _clock.Now
             };
 
