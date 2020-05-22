@@ -7,7 +7,6 @@ namespace Bog.Api.Domain.Tests.Data
 {
     public class ArticleFixture
     {
-
         public Guid Id { get; set; }
 
         public Blog Blog { get; set; }
@@ -32,6 +31,8 @@ namespace Bog.Api.Domain.Tests.Data
 
         public List<EntryContent> ArticleEntries { get; set; }
 
+        public List<MetaTag> MetaTags { get; set; }
+
         public ArticleFixture()
         {
             var blogFixture = new BlogFixture();
@@ -46,6 +47,7 @@ namespace Bog.Api.Domain.Tests.Data
             Created = DateTimeOffset.UtcNow;
             IsDeleted = false;
             ArticleEntries = Enumerable.Empty<EntryContent>().ToList();
+            MetaTags = Enumerable.Empty<MetaTag>().ToList();
         }
 
         public Article Build()
@@ -63,13 +65,20 @@ namespace Bog.Api.Domain.Tests.Data
                 Deleted = Deleted,
                 IsDeleted = IsDeleted,
                 IsPublished = IsPublished,
-                ArticleEntries = ArticleEntries
+                ArticleEntries = ArticleEntries,
+                MetaTags = MetaTags
             };
 
             foreach (var articleEntry in ArticleEntries)
             {
                 articleEntry.ArticleId = article.Id;
                 articleEntry.Article = article;
+            }
+
+            foreach (var metaTag in MetaTags)
+            {
+                metaTag.ArticleId = article.Id;
+                metaTag.Article = article;
             }
 
             return article;

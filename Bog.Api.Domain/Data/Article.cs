@@ -28,5 +28,7 @@ namespace Bog.Api.Domain.Data
         public DateTimeOffset? Deleted { get; set; }
 
         public IEnumerable<EntryContent> ArticleEntries { get; set; }
+
+        public IEnumerable<MetaTag> MetaTags { get; set; }
     }
 }
