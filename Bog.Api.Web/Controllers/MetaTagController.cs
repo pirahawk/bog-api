@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Bog.Api.Domain.Coordinators;
 using Bog.Api.Domain.Models.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Bog.Api.Web.Controllers
 {
@@ -18,18 +19,18 @@ namespace Bog.Api.Web.Controllers
         }
 
         [Route("{articleId:guid}")]
-        public async Task<IActionResult> AddMetaTag(Guid articleId, [FromBody]MetaTagRequest metaTagRequest)
+        public async Task<IActionResult> AddMetaTag(Guid articleId, [FromBody]MetaTagRequest[] metaTagRequests)
         {
-            if (string.IsNullOrWhiteSpace(metaTagRequest?.Name))
+            if (metaTagRequests == null)
             {
-                return BadRequest("Missing meta-tag name");
+                return BadRequest("No meta-tags included");
             }
 
-            var result = await _addMetaTagCoordinator.AddArticleMetaTag(articleId,metaTagRequest);
+            var result = await _addMetaTagCoordinator.AddArticleMetaTags(articleId, metaTagRequests);
 
-            if (result == null)
+            if (result == null || !result.Any())
             {
-                return BadRequest("could not create metatag");
+                return BadRequest("could not create meta-tags");
             }
 
             return NoContent();

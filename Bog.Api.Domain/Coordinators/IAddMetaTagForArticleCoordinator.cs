@@ -7,6 +7,6 @@ namespace Bog.Api.Domain.Coordinators
 {
     public interface IAddMetaTagForArticleCoordinator
     {
-        Task<MetaTag> AddArticleMetaTag(Guid articleId, MetaTagRequest metaTagRequest);
+        Task<MetaTag[]> AddArticleMetaTags(Guid articleId, params MetaTagRequest[] metaTagRequests);
     }
 }

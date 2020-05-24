@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Bog.Api.Domain.Data;
+using Bog.Api.Domain.Models.Http;
 
 namespace Bog.Api.Domain.Tests.Data
 {
@@ -88,6 +89,14 @@ namespace Bog.Api.Domain.Tests.Data
         {
             ArticleEntries ??= Enumerable.Empty<EntryContent>().ToList();
             ArticleEntries.AddRange(entries);
+            return this;
+        }
+
+        public ArticleFixture WithTags(params MetaTagRequest[] tagsToAdd)
+        {
+            MetaTags = tagsToAdd
+                .Select(t => new MetaTagFixture {Name = t.Name}.Build())
+                .ToList();
             return this;
         }
     }

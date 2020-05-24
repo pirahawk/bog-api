@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Bog.Api.Common.Time;
 using Bog.Api.Domain.Data;
@@ -15,29 +16,43 @@ namespace Bog.Api.Domain.Coordinators
             _context = context;
         }
 
-        public async Task<MetaTag> AddArticleMetaTag(Guid articleId, MetaTagRequest metaTagRequest)
+        public async Task<MetaTag[]> AddArticleMetaTags(Guid articleId, params MetaTagRequest[] metaTagRequests)
         {
-            if (metaTagRequest == null) throw new ArgumentNullException(nameof(metaTagRequest));
-            if (string.IsNullOrWhiteSpace(metaTagRequest.Name)) throw new ArgumentNullException(nameof(metaTagRequest.Name));
-
-            var existingArticle = await _context.Find<Article>(articleId);
+            if (metaTagRequests == null) throw new ArgumentNullException(nameof(metaTagRequests));
+            var existingArticle = GetExistingArticle(articleId);
 
             if (existingArticle == null)
             {
                 return null;
             }
 
-            var metaTag = new MetaTag
+            var tagsToCreate = metaTagRequests
+                .Where(mtr => existingArticle.MetaTags.All(mt => mt.Name != mtr.Name))
+                .ToArray();
+
+            if (!tagsToCreate.Any())
+            {
+                return null;
+            }
+
+            var newMetaTagsForArticle = tagsToCreate.Select(nt => new MetaTag
             {
                 ArticleId = existingArticle.Id,
                 Article = existingArticle,
-                Name = metaTagRequest.Name
-            };
+                Name = nt.Name
+            }).ToArray();
 
-            await _context.Add(metaTag);
+            await _context.Add(newMetaTagsForArticle);
             await _context.SaveChanges();
 
-            return metaTag;
+            return newMetaTagsForArticle;
+        }
+
+        private Article GetExistingArticle(Guid articleId)
+        {
+            var existingArticle = _context.Query<Article>("MetaTags")
+                .FirstOrDefault(article => article.Id == articleId);
+            return existingArticle;
         }
     }
 }
