@@ -25,7 +25,7 @@ namespace Bog.Api.Web.Configuration
             services.AddTransient<IGetArticleMediaLookupStrategy, GetArticleMediaLookupStrategy>();
             services.AddTransient<IGetMediaLookupQuery, GetMediaLookupQuery>();
             services.AddTransient<IAddMetaTagForArticleCoordinator, AddMetaTagForArticleCoordinator>();
-
+            services.AddTransient<IRemoveMetaTagForArticleCoordinator, RemoveMetaTagForArticleCoordinator>();
         }
     }
 }

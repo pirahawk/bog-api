@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Bog.Api.Common.Time;
-using Bog.Api.Domain.Data;
+﻿using Bog.Api.Domain.Data;
 using Bog.Api.Domain.DbContext;
 using Bog.Api.Domain.Models.Http;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Bog.Api.Domain.Coordinators
 {
@@ -18,7 +17,7 @@ namespace Bog.Api.Domain.Coordinators
 
         public async Task<MetaTag[]> AddArticleMetaTags(Guid articleId, params MetaTagRequest[] metaTagRequests)
         {
-            if (metaTagRequests == null) throw new ArgumentNullException(nameof(metaTagRequests));
+            if (metaTagRequests == null || !metaTagRequests.Any()) throw new ArgumentNullException(nameof(metaTagRequests));
             var existingArticle = GetExistingArticle(articleId);
 
             if (existingArticle == null)
