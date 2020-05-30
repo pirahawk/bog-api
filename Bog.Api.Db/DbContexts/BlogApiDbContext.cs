@@ -17,7 +17,7 @@ namespace Bog.Api.Db.DbContexts
         public DbSet<Article> Articles { get; set; }
         public DbSet<EntryContent> EntryContents { get; set; }
         public DbSet<EntryMedia> EntryMedia { get; set; }
-
+        public DbSet<MetaTag> MetaTags { get; set; }
 
         public BlogApiDbContext(IOptionsMonitor<EntityConfiguration> entityContextOptionsAccessor, ILogger<BlogApiDbContext> logger)
         {
@@ -61,12 +61,18 @@ namespace Bog.Api.Db.DbContexts
             modelBuilder.Entity<EntryMedia>().Property(em => em.ContentType).IsRequired();
             modelBuilder.Entity<EntryMedia>().Property(em => em.BlobFileName).IsRequired();
             modelBuilder.Entity<EntryMedia>().Property(em => em.MD5Base64Hash).IsRequired();
-
             modelBuilder.Entity<EntryMedia>()
                 .HasOne(em => em.EntryContent)
                 .WithMany(ec => ec.EntryMedia)
                 .HasForeignKey(em => em.EntryContentId);
 
+            modelBuilder.Entity<MetaTag>().HasKey(mt => mt.Id);
+            modelBuilder.Entity<MetaTag>().Property(mt=>mt.Name).IsRequired();
+            modelBuilder.Entity<MetaTag>().HasKey(mt => mt.Id);
+            modelBuilder.Entity<MetaTag>()
+                .HasOne(mt => mt.Article)
+                .WithMany(a => a.MetaTags)
+                .HasForeignKey(mt => mt.ArticleId);
 
             base.OnModelCreating(modelBuilder);
 
