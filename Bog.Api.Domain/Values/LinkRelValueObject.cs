@@ -7,6 +7,6 @@
         public const string ENTRY = "ENTRY";
         public const string MEDIA = "MEDIA";
         public const string MEDIA_LOOKUP = "MEDIA_LOOKUP";
-
+        public const string META_TAG = "META_TAG";
     }
 }

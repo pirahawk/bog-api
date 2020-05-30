@@ -96,7 +96,7 @@ namespace Bog.Api.Web.Controllers
                 new Link {Relation = LinkRelValueObject.SELF, Href = Url.Action(nameof(GetArticle), new { id = result.Id})},
                 new Link {Relation = LinkRelValueObject.ENTRY, Href = Url.Action("GetLatestArticleEntry","Entries", new { articleId = result.Id})},
                 new Link {Relation = LinkRelValueObject.MEDIA_LOOKUP, Href = Url.Action("GetMediaContentLookup","EntryMedia", new { articleId = result.Id})},
-
+                new Link {Relation = LinkRelValueObject.META_TAG, Href = Url.Action("AddMetaTag", "MetaTag", new {articleId = result.Id})},
             };
 
             return new ArticleResponse
