@@ -28,7 +28,8 @@ namespace Bog.Api.Domain.Coordinators
             }
 
             var tagsToDelete = existingArticle.MetaTags
-                .Where(mt => metaTagRequests.Any(mtr => mtr.Name == mt.Name));
+                .Where(mt => metaTagRequests.Any(mtr => string.Equals(mtr.Name, mt.Name)))
+                .ToArray();
 
             foreach (var tagToDelete in tagsToDelete)
             {
