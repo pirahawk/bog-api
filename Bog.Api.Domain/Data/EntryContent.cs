@@ -12,5 +12,6 @@ namespace Bog.Api.Domain.Data
         public IEnumerable<EntryMedia> EntryMedia { get; set; }
         public DateTimeOffset? Persisted { get; set; }
         public string BlobUrl { get; set; }
+        public string ConvertedBlobUrl { get; set; }
     }
 }
