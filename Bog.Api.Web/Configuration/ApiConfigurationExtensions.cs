@@ -10,6 +10,7 @@ namespace Bog.Api.Web.Configuration
         {
             services.Configure<EntityConfiguration>(configuration.GetSection("ConnectionStrings"));
             services.Configure<BlobStorageConfiguration>(configuration.GetSection("BlobStorageConfiguration"));
+            services.Configure<MarkdownConverterConfiguration>(configuration.GetSection("MarkdownConverterConfiguration"));
         }
     }
 }

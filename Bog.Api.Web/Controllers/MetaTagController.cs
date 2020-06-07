@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Bog.Api.Domain.Coordinators;
 using Bog.Api.Domain.Models.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Bog.Api.Web.Controllers
 {
