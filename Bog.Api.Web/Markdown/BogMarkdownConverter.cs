@@ -14,7 +14,7 @@ namespace Bog.Api.Web.Markdown
             _bogHttpClient = bogHttpClient;
         }
 
-        public Task<string> ConvertArticle(Guid articleId)
+        public Task<string> ConvertArticle(Guid articleId, string mdContentUrl)
         {
             throw new NotImplementedException();
         }

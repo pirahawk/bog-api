@@ -22,7 +22,7 @@ namespace Bog.Api.Domain.Coordinators
 
             if (result != null)
             {
-                string uploadUrl = await _uploadCoordinator.UploadArticleEntry(result, entry);
+                string uploadUrl = await _uploadCoordinator.UploadMarkdownArticleEntry(result, entry);
 
                 if (string.IsNullOrWhiteSpace(uploadUrl))
                 {

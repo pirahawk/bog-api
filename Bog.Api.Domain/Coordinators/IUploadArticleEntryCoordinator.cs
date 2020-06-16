@@ -6,6 +6,7 @@ namespace Bog.Api.Domain.Coordinators
 {
     public interface IUploadArticleEntryCoordinator
     {
-        Task<string> UploadArticleEntry(EntryContent entryContent, ArticleEntry articleEntry);
+        Task<string> UploadMarkdownArticleEntry(EntryContent entryContent, ArticleEntry articleEntry);
+        Task<string> UploadConvertedArticleEntry(EntryContent entryContent, string convertedContent);
     }
 }

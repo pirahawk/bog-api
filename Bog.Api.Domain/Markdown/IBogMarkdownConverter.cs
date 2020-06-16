@@ -5,6 +5,6 @@ namespace Bog.Api.Domain.Markdown
 {
     public interface IBogMarkdownConverter
     {
-        public Task<string> ConvertArticle(Guid articleId);
+        public Task<string> ConvertArticle(Guid articleId, string mdContentUrl);
     }
 }
