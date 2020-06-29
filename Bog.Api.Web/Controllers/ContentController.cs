@@ -1,11 +1,9 @@
-﻿using Bog.Api.Common;
-using Bog.Api.Domain.Coordinators;
+﻿using Bog.Api.Domain.Coordinators;
 using Bog.Api.Domain.Data;
-using Bog.Api.Domain.Markdown;
 using Bog.Api.Domain.Models.Http;
+using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Bog.Api.Web.Controllers
@@ -17,8 +15,7 @@ namespace Bog.Api.Web.Controllers
         private readonly IFindBlogArticleCoordinator _findBlogArticleCoordinator;
         private readonly IBogMarkdownConverterStrategy _bogMarkdownConverterStrategy;
 
-        public ContentController(IFindBlogArticleCoordinator findBlogArticleCoordinator, 
-            IBogMarkdownConverter mdConverter, IBogMarkdownConverterStrategy bogMarkdownConverterStrategy)
+        public ContentController(IFindBlogArticleCoordinator findBlogArticleCoordinator, IBogMarkdownConverterStrategy bogMarkdownConverterStrategy)
         {
             _findBlogArticleCoordinator = findBlogArticleCoordinator;
             _bogMarkdownConverterStrategy = bogMarkdownConverterStrategy;
@@ -30,7 +27,6 @@ namespace Bog.Api.Web.Controllers
         {
             var findArticleTask = _findBlogArticleCoordinator.Find(articleId);
             var latestConvertedEntryContentUriTask = _bogMarkdownConverterStrategy.GetLatestConvertedEntryContentUri(articleId);
-
             var article = await findArticleTask;
 
             if (article == null)
@@ -45,9 +41,13 @@ namespace Bog.Api.Web.Controllers
 
         private ContentResponse MapContentResponse(Article article, string latestEntryContentLink, string keywords)
         {
-            //TODO Add entry content link to LINKS when ready
-            Link[] links = Enumerable.Empty<Link>().ToArray();
+            var links = new Link[]
+            {
+                new Link {Relation = LinkRelValueObject.CONTENT_BLOB_URL, Href = latestEntryContentLink},
+            };
 
+
+            //TODO Add Tags
             var mapContentResponse = new ContentResponse
             {
                 Author = article.Author,

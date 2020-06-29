@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Text.Json;
 using Bog.Api.Domain.Configuration;
 using Bog.Api.Domain.Markdown;
 using Bog.Api.Web.Markdown;
@@ -31,9 +32,17 @@ namespace Bog.Api.Web.Configuration
                     uriBuilder.Port = port;
                 }
 
+                var jsonOptions = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    IgnoreNullValues = true,
+                    AllowTrailingCommas = true,
+                    WriteIndented = true
+                };
+
                 var httpClient = new HttpClient();
                 httpClient.BaseAddress = uriBuilder.Uri;
-                var converter = new BogMarkdownConverter(httpClient);
+                var converter = new BogMarkdownConverter(httpClient, jsonOptions);
                 return converter;
             });
         }
