@@ -25,16 +25,14 @@ namespace Bog.Api.Web.Controllers
         [Route("{articleId:guid}")]
         public async Task<IActionResult> GetArticle(Guid articleId)
         {
-            var findArticleTask = _findBlogArticleCoordinator.Find(articleId);
-            var latestConvertedEntryContentUriTask = _bogMarkdownConverterStrategy.GetLatestConvertedEntryContentUri(articleId);
-            var article = await findArticleTask;
+            var article = await _findBlogArticleCoordinator.Find(articleId);
 
             if (article == null)
             {
                 return NotFound();
             }
 
-            var latestEntryContentLink = await latestConvertedEntryContentUriTask;
+            var latestEntryContentLink = await _bogMarkdownConverterStrategy.GetLatestConvertedEntryContentUri(articleId);
             var result = MapContentResponse(article, latestEntryContentLink, string.Empty);
             return Ok(result);
         }
