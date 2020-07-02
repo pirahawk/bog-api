@@ -16,9 +16,9 @@ namespace Bog.Api.Domain.Coordinators
         {
             _blobstore = blobstore;
         }
-        public async Task<string> UploadArticleEntry(EntryContent entryContent, ArticleEntry articleEntry)
+
+        public async Task<string> UploadMarkdownArticleEntry(EntryContent entryContent, ArticleEntry articleEntry)
         {
-            if (entryContent == null) throw new ArgumentNullException(nameof(entryContent));
             if (articleEntry == null) throw new ArgumentNullException(nameof(articleEntry));
 
             if (string.IsNullOrWhiteSpace(articleEntry.Content))
@@ -26,8 +26,23 @@ namespace Bog.Api.Domain.Coordinators
                 return null;
             }
 
-            var contentBase64 = StringUtilities.ToBase64(articleEntry.Content);
-            return await _blobstore.PersistArticleEntryAsync(BlobStorageContainer.MARKDOWN_ARTICLE_ENTRIES_CONTAINER, entryContent.ArticleId, entryContent.Id, contentBase64);
+            return await UploadArticleEntry(entryContent, articleEntry.Content, BlobStorageContainer.MARKDOWN_ARTICLE_ENTRIES_CONTAINER);
+        }
+
+        public async Task<string> UploadConvertedArticleEntry(EntryContent entryContent, string convertedContent)
+        {
+            if (string.IsNullOrWhiteSpace(convertedContent))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(convertedContent));
+
+            return await UploadArticleEntry(entryContent, convertedContent, BlobStorageContainer.TRANSLATED_ARTICLE_ENTRIES_CONTAINER);
+        }
+
+        private async Task<string> UploadArticleEntry(EntryContent entryContent, string content, BlobStorageContainer storageContainer)
+        {
+            if (entryContent == null) throw new ArgumentNullException(nameof(entryContent));
+
+            var contentBase64 = StringUtilities.ToBase64(content);
+            return await _blobstore.PersistArticleEntryAsync(storageContainer, entryContent.ArticleId, entryContent.Id, contentBase64);
         }
     }
 }

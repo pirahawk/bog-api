@@ -24,7 +24,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
             var entryContent = BuildTestSetup(articleEntry, out var base64, out var mock, out var coordinator);
 
-            var result = await coordinator.UploadArticleEntry(entryContent, articleEntry);
+            var result = await coordinator.UploadMarkdownArticleEntry(entryContent, articleEntry);
 
             mock.Verify(m => m.PersistArticleEntryAsync(BlobStorageContainer.MARKDOWN_ARTICLE_ENTRIES_CONTAINER, 
                 entryContent.ArticleId, 
@@ -44,7 +44,7 @@ namespace Bog.Api.Domain.Tests.Coordinators
 
             var entryContent = BuildTestSetup(articleEntry, out var base64, out var mock, out var coordinator);
 
-            var result = await coordinator.UploadArticleEntry(entryContent, articleEntry);
+            var result = await coordinator.UploadMarkdownArticleEntry(entryContent, articleEntry);
 
             Assert.Null(result);
             mock.Verify(m => m.PersistArticleEntryAsync(BlobStorageContainer.MARKDOWN_ARTICLE_ENTRIES_CONTAINER,

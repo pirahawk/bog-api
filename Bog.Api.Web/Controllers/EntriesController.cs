@@ -5,7 +5,9 @@ using Bog.Api.Domain.Models.Http;
 using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Bog.Api.Common;
 
 namespace Bog.Api.Web.Controllers
 {
@@ -55,12 +57,24 @@ namespace Bog.Api.Web.Controllers
 
         private ArticleEntryResponse MapEntryResponse(EntryContent result)
         {
-            var links = new Link[]
+            var links = new List<Link>
             {
                 new Link {Relation = LinkRelValueObject.ARTICLE, Href = Url.Action("GetArticle", "Article", new { id = result.ArticleId})},
                 new Link {Relation = LinkRelValueObject.SELF, Href = Url.Action(nameof(GetLatestArticleEntry), new { articleId = result.ArticleId})},
                 new Link {Relation = LinkRelValueObject.MEDIA, Href = Url.Action("UploadMediaContent", "EntryMedia", new { entryId = result.Id})},
             };
+
+            if (!string.IsNullOrWhiteSpace(result.BlobUrl))
+            {
+                var mdBlobUrl = StringUtilities.FromBase64(result.BlobUrl);
+                links.Add(new Link { Relation = LinkRelValueObject.MD_BLOB_URL, Href = mdBlobUrl});
+            }
+
+            if (!string.IsNullOrWhiteSpace(result.ConvertedBlobUrl))
+            {
+                var convertedBlobUrl = StringUtilities.FromBase64(result.ConvertedBlobUrl);
+                links.Add(new Link { Relation = LinkRelValueObject.BLOB_URL, Href = convertedBlobUrl });
+            }
 
             return new ArticleEntryResponse
             {
@@ -68,7 +82,7 @@ namespace Bog.Api.Web.Controllers
                 ArticleId = result.ArticleId,
                 Created = result.Created,
                 Persisted = result.Persisted,
-                Links = links,
+                Links = links.ToArray(),
             };
         }
     }

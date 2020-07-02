@@ -59,7 +59,5 @@ namespace Bog.Api.Domain.Tests.Data
                 MD5Base64Hash = MD5Base64Hash,
             };
         }
-
-        
     }
 }

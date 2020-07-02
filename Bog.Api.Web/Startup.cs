@@ -20,13 +20,13 @@ namespace Bog.Api.Web
         {
             //services.AddDbContext<BlogApiDbContext>((sp, dbCtxBuilder) => { dbCtxBuilder.Options.UseSqlServer(); });
             services.WithMvc();
+            services.WithMarkdownConverterClient();
             services.WithUtilities();
             services.WithCloudUtilities();
             services.WithApiConfiguration(_configuration);
             services.WithEFDbContext();
             services.WithBlogStartupFilters();
             services.WithDTOCoordinators();
-            
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
