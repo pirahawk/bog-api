@@ -27,6 +27,8 @@ namespace Bog.Api.Web.Configuration
             services.AddTransient<IAddMetaTagForArticleCoordinator, AddMetaTagForArticleCoordinator>();
             services.AddTransient<IRemoveMetaTagForArticleCoordinator, RemoveMetaTagForArticleCoordinator>();
             services.AddTransient<IBogMarkdownConverterStrategy, BogMarkdownConverterStrategy>();
+            services.AddTransient<IGetTagsForArticleCoordinator, GetTagsForArticleCoordinator>();
+
         }
     }
 }

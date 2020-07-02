@@ -77,7 +77,6 @@ namespace Bog.Api.Domain.Tests.Coordinators
                 Author = "Test",
                 Title = "Some-title",
                 Description = "some-Description",
-                KeyWords = "some-KeyWords",
             };
 
             var dbContextFixture = new MockBlogApiDbContextFixture().With(blog, blog.Id);

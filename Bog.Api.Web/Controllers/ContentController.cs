@@ -4,7 +4,10 @@ using Bog.Api.Domain.Models.Http;
 using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Bog.Api.Web.Controllers
 {
@@ -14,11 +17,13 @@ namespace Bog.Api.Web.Controllers
     {
         private readonly IFindBlogArticleCoordinator _findBlogArticleCoordinator;
         private readonly IBogMarkdownConverterStrategy _bogMarkdownConverterStrategy;
+        private readonly IGetTagsForArticleCoordinator _getTagsForArticleCoordinator;
 
-        public ContentController(IFindBlogArticleCoordinator findBlogArticleCoordinator, IBogMarkdownConverterStrategy bogMarkdownConverterStrategy)
+        public ContentController(IFindBlogArticleCoordinator findBlogArticleCoordinator, IBogMarkdownConverterStrategy bogMarkdownConverterStrategy, IGetTagsForArticleCoordinator getTagsForArticleCoordinator)
         {
             _findBlogArticleCoordinator = findBlogArticleCoordinator;
             _bogMarkdownConverterStrategy = bogMarkdownConverterStrategy;
+            _getTagsForArticleCoordinator = getTagsForArticleCoordinator;
         }
 
         [HttpGet]
@@ -33,11 +38,12 @@ namespace Bog.Api.Web.Controllers
             }
 
             var latestEntryContentLink = await _bogMarkdownConverterStrategy.GetLatestConvertedEntryContentUri(articleId);
-            var result = MapContentResponse(article, latestEntryContentLink, string.Empty);
+            var metaTags = _getTagsForArticleCoordinator.GetAllTagsForArticle(articleId);
+            var result = MapContentResponse(article, latestEntryContentLink, metaTags);
             return Ok(result);
         }
 
-        private ContentResponse MapContentResponse(Article article, string latestEntryContentLink, string keywords)
+        private ContentResponse MapContentResponse(Article article, string latestEntryContentLink, IEnumerable<string> metaTags)
         {
             var links = new Link[]
             {
@@ -45,7 +51,6 @@ namespace Bog.Api.Web.Controllers
             };
 
 
-            //TODO Add Tags
             var mapContentResponse = new ContentResponse
             {
                 Author = article.Author,
@@ -57,7 +62,7 @@ namespace Bog.Api.Web.Controllers
                 Deleted = article.Deleted,
                 IsDeleted = article.IsDeleted,
 
-                KeyWords = keywords,
+                KeyWords = metaTags.ToArray(),
                 Links = links
             };
 
