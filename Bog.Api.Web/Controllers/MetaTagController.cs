@@ -3,12 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Bog.Api.Domain.Coordinators;
 using Bog.Api.Domain.Models.Http;
+using Bog.Api.Web.Configuration.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bog.Api.Web.Controllers
 {
     [ApiController]
     [Route("api/meta")]
+    [ServiceFilter(typeof(ApiKeyAuthenticationFilterAttribute))]
     public class MetaTagController : ControllerBase
     {
         private IAddMetaTagForArticleCoordinator _addMetaTagCoordinator;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bog.Api.Web.Configuration.Filters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Bog.Api.Web.Controllers
 {

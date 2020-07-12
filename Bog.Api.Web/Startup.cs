@@ -26,6 +26,7 @@ namespace Bog.Api.Web
             services.WithApiConfiguration(_configuration);
             services.WithEFDbContext();
             services.WithBlogStartupFilters();
+            services.WithAuthenticationFilters();
             services.WithDTOCoordinators();
         }
 

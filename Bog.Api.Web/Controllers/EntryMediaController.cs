@@ -9,11 +9,13 @@ using Bog.Api.Common;
 using Bog.Api.Domain.Data;
 using Bog.Api.Domain.Models.Article;
 using Bog.Api.Domain.Values;
+using Bog.Api.Web.Configuration.Filters;
 
 namespace Bog.Api.Web.Controllers
 {
     [ApiController]
     [Route("api/media")]
+    [ServiceFilter(typeof(ApiKeyAuthenticationFilterAttribute))]
     public class EntryMediaController : ControllerBase
     {
         private readonly ICreateAndPersistArticleEntryMediaStrategy _createStrategy;
