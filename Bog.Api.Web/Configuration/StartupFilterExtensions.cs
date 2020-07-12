@@ -11,5 +11,10 @@ namespace Bog.Api.Web.Configuration
             services.AddTransient<IStartupFilter, BlogDbContextStartupDataSeeder>();
             services.AddTransient<IStartupFilter, BlobStoreContainerStartupFilter>();
         }
+
+        public static void WithAuthenticationFilters(this IServiceCollection services)
+        {
+            services.AddTransient<ApiKeyAuthenticationFilterAttribute>();
+        }
     }
 }

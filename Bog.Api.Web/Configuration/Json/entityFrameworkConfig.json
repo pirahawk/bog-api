@@ -1,5 +1,0 @@
-{
-  "ConnectionStrings": {
-    "BlogApiDbContext": "Server=localhost\\SQLEXPRESS;Database=blogApiDb;Trusted_Connection=True;MultipleActiveResultSets=true"
-  }
-}

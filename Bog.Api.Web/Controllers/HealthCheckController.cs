@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bog.Api.Web.Configuration.Filters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Bog.Api.Web.Controllers
 {
@@ -8,6 +9,13 @@ namespace Bog.Api.Web.Controllers
     {
         [HttpGet()]
         public IActionResult Ping()
+        {
+            return NoContent();
+        }
+
+        [Route("test")]
+        [ServiceFilter(typeof(ApiKeyAuthenticationFilterAttribute))]
+        public IActionResult Test()
         {
             return NoContent();
         }
