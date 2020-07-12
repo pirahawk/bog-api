@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Bog.Api.Domain.Configuration;
+using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
@@ -12,7 +13,6 @@ namespace Bog.Api.Web.Configuration.Filters
     public class ApiKeyAuthenticationFilterAttribute : Attribute, IAuthorizationFilter
     {
         private readonly BlogApiSettings _apiSettings;
-        private const string API_KEY_HEADER_NAME = "bog-api-k";
 
         public ApiKeyAuthenticationFilterAttribute(IOptions<BlogApiSettings> apiSettings)
         {
@@ -24,7 +24,7 @@ namespace Bog.Api.Web.Configuration.Filters
             StringValues apiKey;
             Guid apiKeyHeaderVal;
 
-            if (!context.HttpContext.Request.Headers.TryGetValue(API_KEY_HEADER_NAME, out apiKey) 
+            if (!context.HttpContext.Request.Headers.TryGetValue(BogApiHeaderNamesValuesObject.API_KEY, out apiKey) 
                 || string.IsNullOrWhiteSpace(apiKey.First())
                 || !Guid.TryParse(apiKey.First(), out apiKeyHeaderVal)
                 || apiKeyHeaderVal != _apiSettings.Api)
