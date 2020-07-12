@@ -12,12 +12,5 @@ namespace Bog.Api.Web.Controllers
         {
             return NoContent();
         }
-
-        [Route("test")]
-        [ServiceFilter(typeof(ApiKeyAuthenticationFilterAttribute))]
-        public IActionResult Test()
-        {
-            return NoContent();
-        }
     }
 }

@@ -8,11 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bog.Api.Common;
+using Bog.Api.Web.Configuration.Filters;
 
 namespace Bog.Api.Web.Controllers
 {
     [ApiController]
     [Route("api/entry")]
+    [ServiceFilter(typeof(ApiKeyAuthenticationFilterAttribute))]
     public class EntriesController: ControllerBase
     {
         private readonly ICreateAndPersistArticleEntryStrategy _persistArticleEntryStrategy;

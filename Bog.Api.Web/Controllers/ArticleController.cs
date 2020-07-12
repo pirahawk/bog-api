@@ -5,11 +5,13 @@ using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Bog.Api.Web.Configuration.Filters;
 
 namespace Bog.Api.Web.Controllers
 {
     [ApiController]
     [Route("api/article")]
+    [ServiceFilter(typeof(ApiKeyAuthenticationFilterAttribute))]
     public class ArticleController : ControllerBase
     {
         private readonly ICreateArticleCoordinator _createArticleCoordinator;
