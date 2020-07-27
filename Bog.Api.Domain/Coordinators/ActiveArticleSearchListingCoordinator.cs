@@ -17,7 +17,7 @@ namespace Bog.Api.Domain.Coordinators
 
         public async Task<IQueryable<Article>> Find(Guid blogId)
         {
-            var allBlogsQuery = _context.Query<Blog>();
+            var allBlogsQuery = _context.Query<Blog>("Articles.MetaTags");
             var allBlogArticlesQuery = FilterArticlesForBlog(blogId, allBlogsQuery);
             var allActiveArticlesQuery = FilterActiveArticles(allBlogArticlesQuery);
             return await Task.FromResult(allActiveArticlesQuery);
