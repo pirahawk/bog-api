@@ -17,16 +17,18 @@ namespace Bog.Api.Web.Controllers
         private readonly IFindBlogArticleCoordinator _findBlogArticleCoordinator;
         private readonly IBogMarkdownConverterStrategy _bogMarkdownConverterStrategy;
         private readonly IGetTagsForArticleCoordinator _getTagsForArticleCoordinator;
+        private readonly IPaginatedArticleListingCoordinator _paginatedArticleListingCoordinator;
 
-        public ContentController(IFindBlogArticleCoordinator findBlogArticleCoordinator, IBogMarkdownConverterStrategy bogMarkdownConverterStrategy, IGetTagsForArticleCoordinator getTagsForArticleCoordinator)
+        public ContentController(IFindBlogArticleCoordinator findBlogArticleCoordinator, IBogMarkdownConverterStrategy bogMarkdownConverterStrategy, IGetTagsForArticleCoordinator getTagsForArticleCoordinator, IPaginatedArticleListingCoordinator paginatedArticleListingCoordinator)
         {
             _findBlogArticleCoordinator = findBlogArticleCoordinator;
             _bogMarkdownConverterStrategy = bogMarkdownConverterStrategy;
             _getTagsForArticleCoordinator = getTagsForArticleCoordinator;
+            _paginatedArticleListingCoordinator = paginatedArticleListingCoordinator;
         }
 
         [HttpGet]
-        [Route("{articleId:guid}")]
+        [Route("/article/{articleId:guid}")]
         public async Task<IActionResult> GetArticle(Guid articleId)
         {
             var article = await _findBlogArticleCoordinator.Find(articleId);
@@ -42,13 +44,30 @@ namespace Bog.Api.Web.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("{blogId:guid}")]
+        public async Task<IActionResult> GetArticles([FromRoute]Guid blogId, 
+            [FromQuery]int? skip, 
+            [FromQuery] int? take, 
+            [FromQuery]string filter, 
+            [FromQuery] string include)
+        {
+            var result = await _paginatedArticleListingCoordinator.Find(blogId, skip, take, filter?.Split('|'), include?.Split('|'));
+            var r1 = result.ToArray();
+            return Ok();
+        }
+
         private ContentResponse MapContentResponse(Article article, string latestEntryContentLink, IEnumerable<string> metaTags)
         {
-            var links = new Link[]
-            {
-                new Link {Relation = LinkRelValueObject.CONTENT_BLOB_URL, Href = latestEntryContentLink},
-            };
+            var links = new Link[0];
 
+            if (!string.IsNullOrWhiteSpace(latestEntryContentLink))
+            {
+                links = new []
+                {
+                    new Link {Relation = LinkRelValueObject.CONTENT_BLOB_URL, Href = latestEntryContentLink},
+                };
+            }
 
             var mapContentResponse = new ContentResponse
             {

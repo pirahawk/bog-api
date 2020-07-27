@@ -13,9 +13,6 @@ namespace Bog.Api.Domain.Tests.Coordinators
 {
     public class UpdateArticleCoordinatorTest
     {
-
-        
-
         [Fact]
         public async Task ReturnsFalseWhenArticleNotFound()
         {
