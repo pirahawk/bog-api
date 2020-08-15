@@ -64,3 +64,25 @@ jobs:
 
     - name: run-tests
       run: dotnet test --nologo
+
+  build_docker:
+    name: Publish docker image
+    needs: [build_nuget, run_tests]
+    if:  github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: checkout-repo
+      uses: actions/checkout@v2
+      with:
+        clean: 'true'
+
+    - name: publish-docker-image
+      if:  github.event_name == 'push' && github.ref == 'refs/heads/master'
+      uses: docker/build-push-action@v1
+      with:
+        username: "pirahawk"
+        password: ${{ secrets.GITHUB_TOKEN }}
+        registry: docker.pkg.github.com
+        repository: pirahawk/bog-api/bogApi
+        tags: ${{github.run_number}},latest 
