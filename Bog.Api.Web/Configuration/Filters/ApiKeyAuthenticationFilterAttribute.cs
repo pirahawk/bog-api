@@ -30,8 +30,20 @@ namespace Bog.Api.Web.Configuration.Filters
                 || apiKeyHeaderVal != _apiSettings.Api)
 
             {
-                context.Result = new StatusCodeResult(401);
+                //context.Result = new StatusCodeResult(401);
+                context.Result = new JsonResult(new TempResult
+                {
+                    Message = $"trying to match incoming {apiKey} against {_apiSettings.Api}"
+                })
+                {
+                    StatusCode = 401
+                };
             }
+        }
+
+        public class TempResult
+        {
+            public string Message { get; set; }
         }
     }
 }
