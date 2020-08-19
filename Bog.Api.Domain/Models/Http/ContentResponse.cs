@@ -13,5 +13,7 @@ namespace Bog.Api.Domain.Models.Http
         public string Title { get; set; }
         public string Description { get; set; }
         public string[] KeyWords { get; set; }
+        public DateTimeOffset Created { get; set; }
+        public Guid Id { get; set; }
     }
 }

@@ -75,15 +75,15 @@ namespace Bog.Api.Web.Controllers
 
             var mapContentResponse = new ContentResponse
             {
+                Id = article.Id,
                 Author = article.Author,
                 Title = article.Title,
                 Description = article.Description,
-
+                Created = article.Created,
                 IsPublished = article.IsPublished,
                 Updated = article.Updated,
                 Deleted = article.Deleted,
                 IsDeleted = article.IsDeleted,
-
                 KeyWords = metaTags.ToArray(),
                 Links = links.ToArray()
             };
