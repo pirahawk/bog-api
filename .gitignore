@@ -4,3 +4,4 @@
 bin
 obj
 nugetPublish
+appsettings.Development.json
