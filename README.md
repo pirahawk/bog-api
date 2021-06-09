@@ -1,1 +1,1 @@
-Project Build status: ![](https://github.com/pirahawk/bog-api/workflows/Bog-API-Build/badge.svg)
+Project Build status: [![Bog-API-Build](https://github.com/pirahawk/bog-api/actions/workflows/build-and-publish.yaml/badge.svg)](https://github.com/pirahawk/bog-api/actions/workflows/build-and-publish.yaml)
