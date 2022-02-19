@@ -1,45 +1,36 @@
 ﻿using Bog.Api.Domain.BlobStore;
 using Bog.Api.Domain.Configuration;
 using Bog.Api.Domain.Values;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Blob;
+using Azure.Storage.Blobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Text;
+using System.Security.Cryptography;
+using System.IO;
+using Azure.Storage.Blobs.Models;
 
 namespace Bog.Api.BlobStorage
 {
     public class AzureBlobStore : IBlobStore
     {
         private readonly ILogger<AzureBlobStore> _logger;
-        private readonly Lazy<CloudStorageAccount> _storageAccountProvider;
-        private CloudStorageAccount _cloudStorageAccount => _storageAccountProvider.Value;
-        private CloudBlobClient _cloudBlobClient => _cloudStorageAccount.CreateCloudBlobClient();
+        private readonly Lazy<BlobServiceClient> _blobServiceClientFactory;
+        private BlobServiceClient _cloudBlobClient => _blobServiceClientFactory.Value;
         
 
         public AzureBlobStore(IOptionsMonitor<BlobStorageConfiguration> blobStorageOptionsAccessor, ILogger<AzureBlobStore> logger)
         {
             if (blobStorageOptionsAccessor.CurrentValue == null) throw new ArgumentNullException(nameof(blobStorageOptionsAccessor));
             _logger = logger;
-            _storageAccountProvider = new Lazy<CloudStorageAccount>(()=> TryCreateStorageAccount(blobStorageOptionsAccessor.CurrentValue.ConnectionString));
+            _blobServiceClientFactory = new Lazy<BlobServiceClient>(()=> TryCreateStorageAccount(blobStorageOptionsAccessor.CurrentValue.ConnectionString));
         }
 
-        private CloudStorageAccount TryCreateStorageAccount(string connectionString)
+        private BlobServiceClient TryCreateStorageAccount(string connectionString)
         {
             _logger.LogInformation(LogEvenIdsValueObject.BlobStorage, "attempting connect to azure blob store account");
-
-            CloudStorageAccount account;
-
-            var createAttempt = CloudStorageAccount.TryParse(connectionString, out account);
-
-            if (!createAttempt)
-            {
-                _logger.LogError(LogEvenIdsValueObject.BlobStorage, "could not connect to azure blob store container");
-                throw new Exception("could not connect to azure blob store container");
-            }
-
+            BlobServiceClient account = new BlobServiceClient(connectionString);
             _logger.LogInformation(LogEvenIdsValueObject.BlobStorage, "connected to azure blob store");
 
             return account;
@@ -48,18 +39,15 @@ namespace Bog.Api.BlobStorage
         public async Task<bool> TryCreateContainer(BlobStorageContainer container)
         {
             var cloudBlobContainer = GetCloudBlobContainer(container);
-            var isNewlyCreated = await cloudBlobContainer.CreateIfNotExistsAsync();
+            var doesExist = await cloudBlobContainer.ExistsAsync();
 
-            if (isNewlyCreated)
+            if (!doesExist)
             {
-                BlobContainerPermissions permissions = new BlobContainerPermissions
-                {
-                    PublicAccess = BlobContainerPublicAccessType.Blob,
-                };
-                await cloudBlobContainer.SetPermissionsAsync(permissions);
+                var creationResponse = await cloudBlobContainer.CreateIfNotExistsAsync();
+                var setAccessPolicyResponse = await cloudBlobContainer.SetAccessPolicyAsync(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
             }
 
-            return isNewlyCreated;
+            return doesExist;
         }
 
         public async Task<string> PersistArticleEntryAsync(BlobStorageContainer container, Guid articleId, Guid entryContentId, string contentBase64)
@@ -67,12 +55,23 @@ namespace Bog.Api.BlobStorage
             if (string.IsNullOrWhiteSpace(contentBase64))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(contentBase64));
 
-            var articleEntryBlobContainer = GetCloudBlobContainer(container);
-            var articleBlobDirectory = articleEntryBlobContainer.GetDirectoryReference($"{articleId}");
-            var entryContentBlob = articleBlobDirectory.GetBlockBlobReference($"{entryContentId}");
-            await entryContentBlob.UploadTextAsync(contentBase64);
+            var blobContainer = GetCloudBlobContainer(container);
+            var textBytes = Encoding.UTF8.GetBytes(contentBase64);
+            using var ms = new MemoryStream(textBytes);
+            using SHA256 mySHA256 = SHA256.Create();
 
-            return entryContentBlob.Uri.AbsoluteUri;
+            var blobClient = blobContainer.GetBlobClient($"{articleId}/{entryContentId}");
+            var test = blobClient.Uri.AbsoluteUri;
+            await blobClient.UploadAsync(ms);
+
+            var headers = new BlobHttpHeaders
+            {
+                ContentType = "text/plain",
+                ContentHash = await mySHA256.ComputeHashAsync(ms)
+            };
+            await blobClient.SetHttpHeadersAsync(headers);
+
+            return blobClient.Uri.AbsoluteUri;
         }
 
         public async Task<string> PersistArticleEntryMedia(Guid entryMediaId, Guid entryContentId, byte[] mediaContent, string contentType)
@@ -81,19 +80,29 @@ namespace Bog.Api.BlobStorage
             if (string.IsNullOrWhiteSpace(contentType)) throw new ArgumentNullException(nameof(contentType));
 
             var entryMediaBlobContainer = GetCloudBlobContainer(BlobStorageContainer.ENTRY_MEDIA_CONTAINER);
-            var entryContentBlobDirectory = entryMediaBlobContainer.GetDirectoryReference($"{entryContentId}");
-            var entryMediaBlob = entryContentBlobDirectory.GetBlockBlobReference($"{entryMediaId}");
+            using var ms = new MemoryStream(mediaContent);
+            using SHA256 mySHA256 = SHA256.Create();
 
-            entryMediaBlob.Properties.ContentType = contentType;
-            await entryMediaBlob.UploadFromByteArrayAsync(mediaContent, 0, mediaContent.Length);
 
-            return entryMediaBlob.Uri.AbsoluteUri;
+            var blobClient = entryMediaBlobContainer.GetBlobClient($"{entryContentId}/{entryMediaId}");
+            var test = blobClient.Uri.AbsoluteUri;
+            await blobClient.UploadAsync(ms);
+
+            var headers = new BlobHttpHeaders
+            {
+                ContentType = contentType,
+                ContentHash = await mySHA256.ComputeHashAsync(ms)
+            };
+            await blobClient.SetHttpHeadersAsync(headers);
+            await blobClient.SetHttpHeadersAsync(headers);
+            return blobClient.Uri.AbsoluteUri;
         }
 
-        private CloudBlobContainer GetCloudBlobContainer(BlobStorageContainer container)
+        private BlobContainerClient GetCloudBlobContainer(BlobStorageContainer container)
         {
             var blobName = BlobStorageLookupValueObjects.BlobNameMap[container];
-            return _cloudBlobClient.GetContainerReference(blobName);
+            var blobContainerClient = _cloudBlobClient.GetBlobContainerClient(blobName);
+            return blobContainerClient;
         }
     }
 }

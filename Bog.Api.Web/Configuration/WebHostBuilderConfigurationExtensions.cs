@@ -3,9 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 using System.Linq;
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.Services.AppAuthentication;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
+//using Microsoft.Azure.KeyVault;
+//using Microsoft.Azure.Services.AppAuthentication;
+//using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.Hosting;
 
 namespace Bog.Api.Web.Configuration
@@ -34,15 +34,15 @@ namespace Bog.Api.Web.Configuration
             var config = builder.Build();
             var keyVaultName = config.GetValue<string>("AzKeyVault");
 
-            var azureServiceTokenProvider = new AzureServiceTokenProvider();
-            var keyVaultClient = new KeyVaultClient(
-                new KeyVaultClient.AuthenticationCallback(
-                    azureServiceTokenProvider.KeyVaultTokenCallback));
+            //var azureServiceTokenProvider = new AzureServiceTokenProvider();
+            //var keyVaultClient = new KeyVaultClient(
+            //    new KeyVaultClient.AuthenticationCallback(
+            //        azureServiceTokenProvider.KeyVaultTokenCallback));
 
-            builder.AddAzureKeyVault(
-                $"https://{keyVaultName}.vault.azure.net/",
-                keyVaultClient,
-                new DefaultKeyVaultSecretManager());
+            //builder.AddAzureKeyVault(
+            //    $"https://{keyVaultName}.vault.azure.net/",
+            //    keyVaultClient,
+            //    new DefaultKeyVaultSecretManager());
         }
 
         private static void AddConfigurationJsonFiles(WebHostBuilderContext context, IConfigurationBuilder builder)
