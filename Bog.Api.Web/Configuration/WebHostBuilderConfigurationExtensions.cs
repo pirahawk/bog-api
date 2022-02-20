@@ -31,21 +31,26 @@ namespace Bog.Api.Web.Configuration
 
         private static void AddKeyVaultConfiguration(WebHostBuilderContext context, IConfigurationBuilder builder)
         {
+            builder.AddEnvironmentVariables();
+
             if (!context.HostingEnvironment.IsProduction())
             {
                 return;
             }
 
-            
-
             var config = builder.Build();
             var keyVaultName = config.GetValue<string>("AzKeyVault");
-            var keyVaultUrl = $"https://{keyVaultName}.vault.azure.net/";
+            
+            if (string.IsNullOrWhiteSpace(keyVaultName))
+            {
+                return;
+            }
 
             // TLDR I DON'T know if this works yet!! HAD to change this during the dotnet 6 upgrade. Check commit history
 
             //var client = new SecretClient(vaultUri: new Uri(keyVaultUrl), credential: new DefaultAzureCredential());
             //var manager = new DefaultKeyVaultSecretManager();
+            var keyVaultUrl = $"https://{keyVaultName}.vault.azure.net/";
             builder.AddAzureKeyVault(new Uri(keyVaultUrl), new DefaultAzureCredential());
         }
 
