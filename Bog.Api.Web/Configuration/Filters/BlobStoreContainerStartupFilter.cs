@@ -1,5 +1,4 @@
 ﻿using Bog.Api.Common.Time;
-using Bog.Api.Domain.DbContext;
 using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

@@ -7,6 +7,11 @@ using System.Linq;
 //using Microsoft.Azure.Services.AppAuthentication;
 //using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.Hosting;
+using Azure.Security.KeyVault.Secrets;
+using System;
+using Azure.Identity;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
+using Azure.Core;
 
 namespace Bog.Api.Web.Configuration
 {
@@ -31,18 +36,17 @@ namespace Bog.Api.Web.Configuration
                 return;
             }
 
+            
+
             var config = builder.Build();
             var keyVaultName = config.GetValue<string>("AzKeyVault");
+            var keyVaultUrl = $"https://{keyVaultName}.vault.azure.net/";
 
-            //var azureServiceTokenProvider = new AzureServiceTokenProvider();
-            //var keyVaultClient = new KeyVaultClient(
-            //    new KeyVaultClient.AuthenticationCallback(
-            //        azureServiceTokenProvider.KeyVaultTokenCallback));
+            // TLDR I DON'T know if this works yet!! HAD to change this during the dotnet 6 upgrade. Check commit history
 
-            //builder.AddAzureKeyVault(
-            //    $"https://{keyVaultName}.vault.azure.net/",
-            //    keyVaultClient,
-            //    new DefaultKeyVaultSecretManager());
+            //var client = new SecretClient(vaultUri: new Uri(keyVaultUrl), credential: new DefaultAzureCredential());
+            //var manager = new DefaultKeyVaultSecretManager();
+            builder.AddAzureKeyVault(new Uri(keyVaultUrl), new DefaultAzureCredential());
         }
 
         private static void AddConfigurationJsonFiles(WebHostBuilderContext context, IConfigurationBuilder builder)

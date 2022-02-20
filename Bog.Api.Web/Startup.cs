@@ -37,13 +37,6 @@ namespace Bog.Api.Web
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseCors(builder =>
-            //{
-            //    builder.AllowAnyOrigin();
-            //    builder.AllowAnyHeader();
-            //    builder.AllowAnyMethod();
-            //});
-
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
