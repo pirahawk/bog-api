@@ -1,24 +1,33 @@
 ﻿using Bog.Api.Common;
 using Bog.Api.Domain.Markdown;
 using Bog.Api.Domain.Models.Http;
-using System;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Bog.Api.Web.Markdown
 {
     public class BogMarkdownConverter : IBogMarkdownConverter
     {
-        private readonly HttpClient _bogHttpClient;
-        private readonly JsonSerializerOptions _jsonOptions;
-
-        public BogMarkdownConverter(HttpClient bogHttpClient, JsonSerializerOptions jsonOptions)
+        public const string HTTP_CLIENT_NAME = "bogMarkdownConverterClient";
+        private readonly IHttpClientFactory clientFactory;
+        private JsonSerializerOptions _jsonOptions
         {
-            _bogHttpClient = bogHttpClient;
-            _jsonOptions = jsonOptions;
+            get
+            {
+                return new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    IgnoreNullValues = true,
+                    AllowTrailingCommas = true,
+                    WriteIndented = true
+                };
+            }
+        }
+
+        public BogMarkdownConverter(IHttpClientFactory clientFactory)
+        {
+            this.clientFactory = clientFactory;
         }
 
         public async Task<string> ConvertArticle(Guid articleId, string mdContentUrl)
@@ -36,7 +45,7 @@ namespace Bog.Api.Web.Markdown
             request.Content = new StringContent(serializedRequestModel);
             request.Content.Headers.ContentType = new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json);
 
-            var response = await _bogHttpClient.SendAsync(request);
+            var response = await clientFactory.CreateClient(HTTP_CLIENT_NAME).SendAsync(request);
 
             if (!response.IsSuccessStatusCode)
             {

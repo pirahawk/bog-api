@@ -2,9 +2,7 @@
 using Bog.Api.Domain.Values;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
-using System;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Bog.Api.Web.Formatters
 {

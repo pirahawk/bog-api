@@ -1,50 +1,34 @@
-﻿using System;
-using System.Net.Http;
-using System.Text.Json;
-using Bog.Api.Domain.Configuration;
+﻿using Bog.Api.Domain.Configuration;
 using Bog.Api.Domain.Markdown;
 using Bog.Api.Web.Markdown;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Bog.Api.Web.Configuration
 {
     public static class MarkdownConverterConfigurationExtensions
     {
-        public static void WithMarkdownConverterClient(this IServiceCollection services)
+        public static void WithMarkdownConverterHttpClient(this WebApplicationBuilder builder)
         {
-            services.AddTransient<IBogMarkdownConverter>(sp =>
-            {
-                var markdownConfig = sp.GetService<IOptionsMonitor<MarkdownConverterConfiguration>>();
-                if (markdownConfig.CurrentValue == null)
-                {
-                    throw new ArgumentException($"Could not find MarkdownConverterConfiguration to create HTTP Client");
-                }
+            var configSection = builder.Configuration.GetSection("MarkdownConverterConfiguration");
 
+            if (!configSection.Exists() || !configSection.GetChildren().Any())
+            {
+                throw new ApplicationException($"Could not bind to {typeof(MarkdownConverterConfiguration)} from applied configuration to create HTTP Client");
+            }
+
+            var markdownConfiguration = new MarkdownConverterConfiguration();
+            configSection.Bind(markdownConfiguration);
+            builder.Services.AddHttpClient(BogMarkdownConverter.HTTP_CLIENT_NAME, httpClient => {
                 var uriBuilder = new UriBuilder()
                 {
-                    Scheme = markdownConfig.CurrentValue.Scheme,
-                    Host = markdownConfig.CurrentValue.Host,
+                    Scheme = markdownConfiguration.Scheme,
+                    Host = markdownConfiguration.Host,
                 };
 
-                if (int.TryParse(markdownConfig.CurrentValue.Port, out var port))
-                {
-                    uriBuilder.Port = port;
-                }
-
-                var jsonOptions = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    IgnoreNullValues = true,
-                    AllowTrailingCommas = true,
-                    WriteIndented = true
-                };
-
-                var httpClient = new HttpClient();
+                uriBuilder.Port = markdownConfiguration.Port.HasValue && markdownConfiguration.Port.Value > 0 ? markdownConfiguration.Port.Value : uriBuilder.Port;
                 httpClient.BaseAddress = uriBuilder.Uri;
-                var converter = new BogMarkdownConverter(httpClient, jsonOptions);
-                return converter;
             });
+
+            builder.Services.AddTransient<IBogMarkdownConverter, BogMarkdownConverter>();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using Bog.Api.Domain.Coordinators;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Bog.Api.Domain.Coordinators;
 
 namespace Bog.Api.Web.Configuration
 {
@@ -10,6 +8,7 @@ namespace Bog.Api.Web.Configuration
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
+            
             services.AddTransient<ICreateArticleCoordinator, CreateArticleCoordinator>();
             services.AddTransient<IFindBlogArticleCoordinator, FindBlogArticleCoordinator>();
             services.AddTransient<IUpdateArticleCoordinator, UpdateArticleCoordinator>();

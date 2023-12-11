@@ -1,9 +1,4 @@
 ﻿using Bog.Api.Web.Configuration;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace Bog.Api.Web
 {
@@ -19,8 +14,8 @@ namespace Bog.Api.Web
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddDbContext<BlogApiDbContext>((sp, dbCtxBuilder) => { dbCtxBuilder.Options.UseSqlServer(); });
-            services.WithMvc();
-            services.WithMarkdownConverterClient();
+            //services.WithMvc();
+            //services.WithMarkdownConverterClient();
             services.WithUtilities();
             services.WithCloudUtilities();
             services.WithApiConfiguration(_configuration);
